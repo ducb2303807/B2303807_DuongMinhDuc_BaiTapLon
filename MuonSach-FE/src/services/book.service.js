@@ -1,6 +1,6 @@
 import createApiClient from "./api.service";
 
-class ReaderService {
+class BookService {
   constructor(baseUrl) {
     this.api = createApiClient(baseUrl);
   }
@@ -24,5 +24,5 @@ class ReaderService {
   }
 }
 
-export const adminReaderService = new ReaderService("/api/admin/readers");
-// export const userReaderService = new ReaderService("/api/user/readers");
+export const adminBookService = new BookService("/api/admin/books");
+// export const userBookService = new BookService("/api/user/books");
