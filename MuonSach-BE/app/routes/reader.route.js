@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const readerController = require("../../controllers/reader.controller");
+const readerController = require("../controllers/reader.controller");
 
 router
   .route("/")
@@ -8,9 +8,12 @@ router
   .post(readerController.create)
   .delete(readerController.deleteAll);
 
+router.route("/login").post(readerController.login);
+
 router
   .route("/:id")
   .get(readerController.findOne)
   .put(readerController.update)
   .delete(readerController.delete);
+
 module.exports = router;

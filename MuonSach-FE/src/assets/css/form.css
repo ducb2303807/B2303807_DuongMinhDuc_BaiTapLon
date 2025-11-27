@@ -1,5 +1,17 @@
+.date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+.date-input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
 @media screen and (min-width: 780px) {
     .form-container {
             max-width: 750px;
     }
 }
+

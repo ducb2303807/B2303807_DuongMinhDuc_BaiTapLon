@@ -1,0 +1,51 @@
+.hero-card {
+    background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.hero-card:hover {
+    transform: translateY(-5px);
+}
+
+.hero-icon-bg {
+    font-size: 10rem;
+    color: rgba(255, 255, 255, 0.2);
+    transform: rotate(-15deg);
+}
+
+.feature-card {
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+
+}
+
+.icon-wrapper {
+    width: 100px;
+    height: 100px;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover .icon-wrapper {
+    transform: scale(1.1);
+}
+
+.bg-light-primary {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.bg-light-success {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.bg-light-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+}

@@ -1,9 +1,11 @@
 const ApiError = require("../api-error");
 const MongoDB = require("../utils/mongodb.util");
 const ReaderService = require("../services/reader.service");
+const jwt = require("jsonwebtoken");
+const config = require("../config/index.js");
 
 exports.create = async (req, res, next) => {
-  if (!req.body?.MaDocGia || !req.body?.Password) {
+  if (!req.body?.Username || !req.body?.Password) {
     return next(new ApiError(400, "MaDocGia and Password can't be empty"));
   }
   try {
@@ -21,13 +23,48 @@ exports.findAll = async (req, res, next) => {
   let documents = [];
   try {
     const readerService = new ReaderService(MongoDB.client);
-    documents = await readerService.find({});
+    const { Username } = req.query;
+    if (Username) {
+      documents = await readerService.findByName(Username);
+    } else {
+      documents = await readerService.find({});
+    }
   } catch (error) {
     return next(
       new ApiError(500, "An error occurred while retrieving readers")
     );
   }
   return res.send(documents);
+};
+
+exports.login = async (req, res, next) => {
+  const { Username, Password } = req.body;
+  try {
+    const readerService = new ReaderService(MongoDB.client);
+    const reader = await readerService.findUsername(Username);
+
+    if (!reader || reader.Password !== Password) {
+      return next(new ApiError(401, "Invalid username or password"));
+    }
+
+    const token = jwt.sign(
+      { id: reader._id, username: reader.Username },
+      config.jwt.secret,
+      { expiresIn: "24h" }
+    );
+
+    return res.send({
+      token: token,
+      user: {
+        id: reader._id,
+        Ten: reader.Ten,
+        Username: reader.Username,
+        role: "reader",
+      },
+    });
+  } catch (error) {
+    return next(new ApiError(500, "An error occurred while logging in"));
+  }
 };
 
 exports.findOne = async (req, res, next) => {

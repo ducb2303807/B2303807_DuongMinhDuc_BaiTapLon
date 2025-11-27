@@ -1,104 +1,90 @@
-<script>
-// Import Service nếu bạn đã nối API (tạm thời mình dùng dữ liệu giả)
-// import { bookService } from "@/services/book.service";
+<template>
+  <div class="container py-5">
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="card hero-card text-white border-0 shadow-lg">
+          <div
+            class="card-body p-5 d-flex align-items-center justify-content-between"
+          >
+            <div>
+              <h1 class="display-5 fw-bold mb-3">
+                Chào mừng đến với website mượn sách
+              </h1>
+              <p class="lead mb-4">
+                Tìm kiếm và mượn những cuốn sách bạn yêu thích một cách dễ dàng
+                và nhanh chóng.
+              </p>
+              <button class="btn btn-light btn-lg fw-semibold text-primary">
+                <i class="fas fa-rocket me-2"></i> Bắt đầu ngay
+              </button>
+            </div>
+            <div class="d-none d-md-block">
+              <i class="fas fa-book-open-reader hero-icon-bg opacity-25"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-export default {
-  data() {
-    return {
-      searchText: "",
-      // Dữ liệu giả lập (Sau này sẽ gọi API để lấy list này)
-      books: [
-        {
-          id: 1,
-          title: "Lập trình Vue.js từ A-Z",
-          author: "Nguyễn Văn A",
-          price: 5000,
-          quantity: 10,
-          image: "https://placehold.co/400x600/png?text=VueJS",
-        },
-        {
-          id: 2,
-          title: "Đắc Nhân Tâm",
-          author: "Dale Carnegie",
-          price: 2000,
-          quantity: 0, // Hết sách
-          image: "https://placehold.co/400x600/png?text=Book",
-        },
-        {
-          id: 3,
-          title: "Nhà Giả Kim",
-          author: "Paulo Coelho",
-          price: 3000,
-          quantity: 5,
-          image: "https://placehold.co/400x600/png?text=Alchemy",
-        },
-        {
-          id: 4,
-          title: "Clean Code - Mã Sạch",
-          author: "Robert C. Martin",
-          price: 7000,
-          quantity: 3,
-          image: "https://placehold.co/400x600/png?text=CleanCode",
-        },
-        {
-          id: 5,
-          title: "Harry Potter và Hòn đá phù thủy",
-          author: "J.K. Rowling",
-          price: 10000,
-          quantity: 12,
-          image: "https://placehold.co/400x600/png?text=HarryPotter",
-        },
-      ],
-    };
-  },
-  computed: {
-    // Hàm lọc sách tự động khi searchText thay đổi
-    filteredBooks() {
-      if (!this.searchText) return this.books;
+    <div class="row g-4">
+      <div v-for="(feature, index) in features" :key="index" class="col-md-4">
+        <div class="card feature-card h-100 border-0 shadow-sm text-center p-4">
+          <div class="card-body">
+            <div
+              class="icon-wrapper mb-4 mx-auto rounded-circle d-flex align-items-center justify-content-center"
+              :class="`bg-light-${feature.colorName}`"
+            >
+              <i
+                :class="[feature.icon, 'fa-3x', `text-${feature.colorName}`]"
+              ></i>
+            </div>
+            <h3 class="h4 fw-bold mb-3">{{ feature.title }}</h3>
+            <p class="text-muted mb-4">
+              {{ feature.description }}
+            </p>
+            <a
+              href="#"
+              class="btn btn-outline-primary rounded-pill px-4 stretched-link"
+            >
+              Truy cập <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
-      const text = this.searchText.toLowerCase();
-      return this.books.filter(
-        (book) =>
-          book.title.toLowerCase().includes(text) ||
-          book.author.toLowerCase().includes(text)
-      );
-    },
+<script setup>
+import { ref } from "vue";
+
+// Dữ liệu cho 3 ô tính năng bên dưới
+// Bạn có thể dễ dàng chỉnh sửa icon, màu sắc và mô tả ở đây
+const features = ref([
+  {
+    title: "Tìm sách",
+    description:
+      "Tra cứu nhanh chóng hàng ngàn đầu sách theo tên, tác giả hoặc thể loại bạn quan tâm.",
+    icon: "fas fa-magnifying-glass",
+    colorName: "primary", // Sử dụng màu xanh dương của Bootstrap
   },
-  methods: {
-    goToDetail(bookId) {
-      // Chuyển hướng đến trang chi tiết (Cần định nghĩa trong router)
-      // this.$router.push(`/books/${bookId}`);
-      console.log("Xem chi tiết sách:", bookId);
-    },
-    handleBorrow(book) {
-      // Logic mượn sách (Check login -> Gọi API)
-      const isLoggedIn = localStorage.getItem("token");
-      if (!isLoggedIn) {
-        alert("Bạn cần đăng nhập để mượn sách!");
-        this.$router.push("/login");
-        return;
-      }
-      alert(`Đã thêm "${book.title}" vào giỏ mượn!`);
-    },
+  {
+    title: "Tìm nhà xuất bản",
+    description:
+      "Lọc và xem danh sách các tài liệu được phát hành bởi các nhà xuất bản uy tín.",
+    icon: "fas fa-building",
+    colorName: "success", // Sử dụng màu xanh lá của Bootstrap
   },
-  //   async created() {
-  //     Nếu có API thì bỏ comment dòng này để load sách thật
-  //     try {
-  //         this.books = await bookService.getAll();
-  //     } catch (error) {
-  //         console.log(error);
-  //     }
-  //   }
-};
+  {
+    title: "Mượn sách",
+    description:
+      "Quy trình mượn trả đơn giản. Theo dõi lịch sử và trạng thái mượn sách của bạn.",
+    icon: "fas fa-book-bookmark",
+    colorName: "warning", // Sử dụng màu vàng cam của Bootstrap
+  },
+]);
 </script>
 
 <style scoped>
-/* Hiệu ứng hover nhẹ cho thẻ Card */
-.hover-card {
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s;
-}
-.hover-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-}
+@import "@/assets/css/home.css";
 </style>

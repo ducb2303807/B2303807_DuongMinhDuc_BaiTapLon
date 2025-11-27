@@ -1,3 +1,6 @@
+<style scoped>
+@import "@/assets/css/app-header.css";
+</style>
 
 <template>
   <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-white  shadow-sm">
@@ -61,6 +64,4 @@
 
 <script></script>
 
-<style scoped>
-@import "@/assets/css/app-header.css";
-</style>
+

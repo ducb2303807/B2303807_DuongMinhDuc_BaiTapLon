@@ -1,10 +1,12 @@
 import { createWebHistory, createRouter } from "vue-router";
+import { isTokenValid } from "@/utils/auth.utils";
 import Home from "@/views/Home.vue";
 
 const routes = [
-  { path: "/", component: Home, meta: { title: "Trang Chủ" } },
+  { path: "/", name: "Home", component: Home, meta: { title: "Trang Chủ" } },
   {
     path: "/login",
+    name: "Login",
     component: () => import("../views/Login.vue"),
     meta: { title: "Đăng Nhập" },
   },
@@ -14,15 +16,6 @@ const routes = [
     meta: { title: "Đăng Ký" },
   },
 
-  // {
-  //   path: "/admin",
-  //   component: AdminLayout,
-  //   children: [
-  //     { path: "login", component: AdminLogin },
-  //     { path: "dashboard", component: AdminDashboard },
-  //     { path: "users", component: UserManagement },
-  //   ],
-  // },
   {
     path: "/:pathMatch(.*)*",
     component: () => import("../views/NotFound.vue"),
@@ -37,6 +30,25 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title || "Mượn sách";
+
+  const userStr = localStorage.getItem("user");
+  const user = userStr ? JSON.parse(userStr) : null;
+
+  // 1. Kiểm tra đăng nhập
+  if (to.meta.requiresAuth && !isTokenValid()) {
+    alert("Vui lòng đăng nhập!");
+    return next({ name: "Login" });
+  }
+
+  // 2. Kiểm tra Role (Quyền)
+  if (to.meta.role) {
+    // Nếu trang yêu cầu role cụ thể (ví dụ 'admin')
+    // Mà user hiện tại không có role đó
+    if (!user || user.role !== to.meta.role) {
+      alert("Bạn không có quyền truy cập trang này!");
+      return next({ name: "Home" }); // Đá về trang chủ
+    }
+  }
   next();
 });
 

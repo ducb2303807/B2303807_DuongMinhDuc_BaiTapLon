@@ -4,14 +4,18 @@ class ReaderService {
   constructor(baseUrl) {
     this.api = createApiClient(baseUrl);
   }
-  async getAll() {
-    return (await this.api.get("/")).data;
+  async getAll(data = {}) {
+    console.log(data);
+    return (await this.api.get("/", { params: data })).data;
   }
   async create(data) {
     return (await this.api.post("/", data)).data;
   }
   async deleteAll() {
     return (await this.api.delete("/")).data;
+  }
+  async login(data) {
+    return (await this.api.post("/login", data)).data;
   }
   async get(id) {
     return (await this.api.get(`/${id}`)).data;
@@ -24,5 +28,4 @@ class ReaderService {
   }
 }
 
-export const adminReaderService = new ReaderService("/api/admin/readers");
-// export const userReaderService = new ReaderService("/api/user/readers");
+export default new ReaderService("/api/readers");

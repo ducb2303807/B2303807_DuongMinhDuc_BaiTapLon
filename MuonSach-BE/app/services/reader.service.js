@@ -7,9 +7,8 @@ class ReaderService {
 
   extractReaderData(payload) {
     const reader = {
-      MaDocGia: payload.MaDocGia,
       Username: payload.Username,
-      Password: payload.password,
+      Password: payload.Password,
       HoLot: payload.HoLot,
       Ten: payload.Ten,
       NgaySinh: payload.NgaySinh,
@@ -43,7 +42,13 @@ class ReaderService {
 
   async findByName(name) {
     return await this.find({
-      name: { $regex: new RegExp(name), $options: "i" },
+      Username: { $regex: new RegExp(`^${name}$`), $options: "i" },
+    });
+  }
+
+  async findUsername(username) {
+    return await this.Reader.findOne({
+      Username: { $regex: new RegExp(`^${username}$`), $options: "i" },
     });
   }
 
