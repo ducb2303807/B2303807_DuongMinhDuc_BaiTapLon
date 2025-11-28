@@ -5,7 +5,6 @@ class ReaderService {
     this.api = createApiClient(baseUrl);
   }
   async getAll(data = {}) {
-    console.log(data);
     return (await this.api.get("/", { params: data })).data;
   }
   async create(data) {

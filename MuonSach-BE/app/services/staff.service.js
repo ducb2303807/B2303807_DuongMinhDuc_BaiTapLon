@@ -7,7 +7,7 @@ class StaffService {
 
   extractStaffData(payload) {
     const staff = {
-      MSNV: payload.MSNV,
+      Username: payload.Username,
       HoTenNV: payload.HoTenNV,
       Password: payload.Password,
       ChucVu: payload.ChucVu,
@@ -42,6 +42,12 @@ class StaffService {
   async findByName(name) {
     return await this.find({
       HoTenNV: { $regex: new RegExp(name), $options: "i" },
+    });
+  }
+
+  async findUsername(username) {
+    return await this.Staff.findOne({
+      Username: { $regex: new RegExp(`^${username}$`), $options: "i" },
     });
   }
 

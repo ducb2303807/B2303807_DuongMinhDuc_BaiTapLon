@@ -12,6 +12,7 @@
 <script>
 import LoginForm from "@/components/LoginForm.vue";
 import ReaderService from "@/services/reader.service";
+import StaffService from "@/services/staff.service";
 export default {
   components: {
     LoginForm,
@@ -26,7 +27,11 @@ export default {
 
     async login(data) {
       try {
-        const result = await ReaderService.login(data);
+        const result =
+          this.role === "Người dùng"
+            ? await this.readerLogin(data)
+            : await this.staffLogin(data);
+
         console.log("Login result:", result);
         if (!result.token) {
           alert("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
@@ -41,6 +46,13 @@ export default {
         console.error("Login failed:", error);
         alert("Đăng nhập thất bại. Vui lòng thử lại.");
       }
+    },
+
+    async readerLogin(data) {
+      return await ReaderService.login(data);
+    },
+    async staffLogin(data) {
+      return await StaffService.login(data);
     },
   },
   data() {

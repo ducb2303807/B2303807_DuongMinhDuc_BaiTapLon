@@ -1,3 +1,7 @@
+<style scoped>
+@import "@/assets/css/home.css";
+</style>
+
 <template>
   <div class="container py-5">
     <div class="row mb-5">
@@ -84,7 +88,3 @@ const features = ref([
   },
 ]);
 </script>
-
-<style scoped>
-@import "@/assets/css/home.css";
-</style>

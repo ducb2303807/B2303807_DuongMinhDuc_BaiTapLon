@@ -1,6 +1,8 @@
 const ApiError = require("../api-error");
 const MongoDB = require("../utils/mongodb.util");
 const StaffService = require("../services/staff.service");
+const jwt = require("jsonwebtoken");
+const config = require("../config/index.js");
 
 exports.create = async (req, res, next) => {
   if (!req.body?.MSNV || !req.body?.Password) {
@@ -14,6 +16,37 @@ exports.create = async (req, res, next) => {
     return next(
       new ApiError(500, "An error occurred while creating the staff")
     );
+  }
+};
+
+exports.login = async (req, res, next) => {
+  const { Username, Password } = req.body;
+  try {
+    const staffService = new StaffService(MongoDB.client);
+    const staff = await staffService.findUsername(Username);
+
+    if (!staff || staff.Password !== Password) {
+      return next(new ApiError(401, "Invalid username or password"));
+    }
+
+    const token = jwt.sign(
+      { id: staff._id, username: staff.Username },
+      config.jwt.secret,
+      { expiresIn: "24h" }
+    );
+
+    return res.send({
+      token: token,
+      user: {
+        id: staff._id,
+        Ten: staff.HoTenNV,
+        Username: staff.Username,
+        role: "staff",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return next(new ApiError(500, "An error occurred while logging in"));
   }
 };
 

@@ -14,7 +14,7 @@
         </p>
         <p>
           <i class="fas fa-id-card me-2 text-secondary"></i>
-          MSSV: ducb2303807
+          MSSV: B2303807
         </p>
       </div>
       <hr class="mb-4 mt-4" style="opacity: 0.2" />

@@ -10,6 +10,9 @@ class StaffService {
   async create(data) {
     return (await this.api.post("/", data)).data;
   }
+  async login(data) {
+    return (await this.api.post("/login", data)).data;
+  }
   async deleteAll() {
     return (await this.api.delete("/")).data;
   }
@@ -24,4 +27,4 @@ class StaffService {
   }
 }
 
-export const adminStaffService = new StaffService("/api/admin/staffs");
+export default new StaffService("/api/staffs");
