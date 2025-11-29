@@ -1,8 +1,10 @@
 <template>
-  <RegisterForm
-    @submit:resister="handleRegister"
-    :check-duplicate-username="checkDuplicateUsername"
-  ></RegisterForm>
+  <div class="container">
+    <RegisterForm
+      @submit:resister="handleRegister"
+      :check-duplicate-username="checkDuplicateUsername"
+    ></RegisterForm>
+  </div>
 </template>
 
 <script>

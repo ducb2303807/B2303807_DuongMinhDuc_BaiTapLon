@@ -5,7 +5,7 @@
 <template>
   <div class="nav-item dropdown">
     <a
-      class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+      class="nav-link dropdown-toggle d-flex align-items-center gap-2 justify-content-center"
       href="#"
       id="navbarDropdown"
       role="button"
@@ -23,7 +23,7 @@
     </a>
 
     <ul
-      class="dropdown-menu dropdown-menu-end"
+      class="dropdown-menu animate-menu border-0 shadow"
       aria-labelledby="navbarDropdown"
     >
       <li>

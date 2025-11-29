@@ -1,21 +1,12 @@
 const { ObjectId } = require("mongodb");
-const ApiError = require("../api-error");
 
 class PublisherService {
   constructor(client) {
     this.Publisher = client.db().collection("NhaXuatBan");
   }
-  // check khoa ngoai
-  async keyCheck(payload) {
-    const { MaNXB } = payload;
-    if (!MaNXB) throw new ApiError(400, "MaNXB can't be empty");
-    if (await this.Publisher.findOne({ MaNXB: MaNXB }))
-      throw new ApiError(400, "MaNXB already exists");
-  }
 
   extractPublisherData(payload) {
     const publisher = {
-      MaNXB: payload.MaNXB,
       TenNXB: payload.TenNXB,
       DiaChi: payload.DiaChi,
     };

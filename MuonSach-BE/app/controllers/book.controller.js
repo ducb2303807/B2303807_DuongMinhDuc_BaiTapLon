@@ -3,8 +3,9 @@ const MongoDB = require("../utils/mongodb.util");
 const BookService = require("../services/book.service");
 
 exports.create = async (req, res, next) => {
-  if (!req.body?.MaSach) {
-    return next(new ApiError(400, "MaSach can't be empty"));
+  if (!req.body?.TenSach) {
+    // Sửa MaSach thành TenSach vì DB mới dùng _id tự sinh
+    return next(new ApiError(400, "Tên sách không được để trống"));
   }
   try {
     const bookService = new BookService(MongoDB.client);
@@ -19,12 +20,7 @@ exports.findAll = async (req, res, next) => {
   let documents = [];
   try {
     const bookService = new BookService(MongoDB.client);
-    const { TenSach } = req.query;
-    if (TenSach) {
-      documents = await bookService.findByName(TenSach);
-    } else {
-      documents = await bookService.find({});
-    }
+    documents = await bookService.find({});
   } catch (error) {
     return next(new ApiError(500, "An error occurred while retrieving book"));
   }

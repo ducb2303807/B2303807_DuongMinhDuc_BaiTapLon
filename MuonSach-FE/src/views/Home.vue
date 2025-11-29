@@ -18,9 +18,12 @@
                 Tìm kiếm và mượn những cuốn sách bạn yêu thích một cách dễ dàng
                 và nhanh chóng.
               </p>
-              <button class="btn btn-light btn-lg fw-semibold text-primary">
+              <a
+                @click.prevent="scrollToFeat"
+                class="btn btn-light btn-lg fw-semibold text-primary"
+              >
                 <i class="fas fa-rocket me-2"></i> Bắt đầu ngay
-              </button>
+              </a>
             </div>
             <div class="d-none d-md-block">
               <i class="fas fa-book-open-reader hero-icon-bg opacity-25"></i>
@@ -30,7 +33,7 @@
       </div>
     </div>
 
-    <div class="row g-4">
+    <div id="feat-list" ref="featListRef" class="row g-4">
       <div v-for="(feature, index) in features" :key="index" class="col-md-4">
         <div class="card feature-card h-100 border-0 shadow-sm text-center p-4">
           <div class="card-body">
@@ -46,12 +49,12 @@
             <p class="text-muted mb-4">
               {{ feature.description }}
             </p>
-            <a
-              href="#"
+            <router-link
+              :to="`${feature.endPoint}`"
               class="btn btn-outline-primary rounded-pill px-4 stretched-link"
             >
               Truy cập <i class="fas fa-arrow-right ms-2"></i>
-            </a>
+            </router-link>
           </div>
         </div>
       </div>
@@ -61,6 +64,17 @@
 
 <script setup>
 import { ref } from "vue";
+const featListRef = ref(null);
+
+const scrollToFeat = () => {
+  // Kiểm tra xem element đã render chưa
+  if (featListRef.value) {
+    featListRef.value.scrollIntoView({
+      behavior: "smooth",
+      block: "center", // Hoặc 'center' nếu muốn nó nằm giữa màn hình
+    });
+  }
+};
 
 // Dữ liệu cho 3 ô tính năng bên dưới
 // Bạn có thể dễ dàng chỉnh sửa icon, màu sắc và mô tả ở đây
@@ -71,6 +85,7 @@ const features = ref([
       "Tra cứu nhanh chóng hàng ngàn đầu sách theo tên, tác giả hoặc thể loại bạn quan tâm.",
     icon: "fas fa-magnifying-glass",
     colorName: "primary", // Sử dụng màu xanh dương của Bootstrap
+    endPoint: "/books",
   },
   {
     title: "Tìm nhà xuất bản",
@@ -78,6 +93,7 @@ const features = ref([
       "Lọc và xem danh sách các tài liệu được phát hành bởi các nhà xuất bản uy tín.",
     icon: "fas fa-building",
     colorName: "success", // Sử dụng màu xanh lá của Bootstrap
+    endPoint: "/publishers",
   },
   {
     title: "Mượn sách",
@@ -85,6 +101,7 @@ const features = ref([
       "Quy trình mượn trả đơn giản. Theo dõi lịch sử và trạng thái mượn sách của bạn.",
     icon: "fas fa-book-bookmark",
     colorName: "warning", // Sử dụng màu vàng cam của Bootstrap
+    endPoint: "/book-borrows",
   },
 ]);
 </script>

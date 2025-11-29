@@ -30,30 +30,106 @@
         class="collapse navbar-collapse justify-content-start text-center text-lg-start"
         id="navbarSupportedContent"
       >
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <router-link class="nav-link fw-bold" aria-current="page" to="/">
-              <span>Trang chủ</span>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link fw-bold" to="/sach">
-              <span>Tìm sách</span>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link fw-bold" to="/nxb">
-              <span>Tìm nhà xuất bản</span>
-            </router-link>
-          </li>
-          <li class="nav-item fw-bold">
-            <router-link class="nav-link" to="/muon-sach">
-              <span>Mượn sách</span>
-            </router-link>
-          </li>
-        </ul>
+        <!-- // header cho độc giả // -->
+        <div v-if="isReader()">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
+            <li class="nav-item">
+              <router-link class="nav-link fw-bold" aria-current="page" to="/">
+                <i class="fas fa-home me-1"></i>Trang chủ
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link fw-bold" to="/books">
+                Tìm sách
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link fw-bold" to="/publishers">
+                Tìm nhà xuất bản
+              </router-link>
+            </li>
+            <li class="nav-item fw-bold">
+              <router-link class="nav-link fw-bold" to="/book-borrows">
+                Mượn sách
+              </router-link>
+            </li>
+          </ul>
+        </div>
+        <!-- // header cho nhân viên // -->
+        <div v-else>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
+            <li class="nav-item">
+              <router-link class="nav-link fw-bold" aria-current="page" to="/">
+                <i class="fas fa-home me-1"></i>Trang chủ
+              </router-link>
+            </li>
 
-        <div class="navbar-nav me-1 mb-2 mb-lg-0 gap-2 align-items-center">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle fw-bold"
+                href="#"
+                id="navbarDropdownCatalog"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Quản lý danh mục
+              </a>
+              <ul
+                class="dropdown-menu animate-menu border-0 shadow"
+                aria-labelledby="navbarDropdownCatalog"
+              >
+                <li>
+                  <router-link class="dropdown-item" to="/admin/books"
+                    >Quản lý Sách</router-link
+                  >
+                </li>
+                <li>
+                  <router-link class="dropdown-item" to="/publishers"
+                    >Nhà xuất bản</router-link
+                  >
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle fw-bold"
+                href="#"
+                id="navbarDropdownUser"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Người dùng
+              </a>
+              <ul
+                class="dropdown-menu animate-menu border-0 shadow"
+                aria-labelledby="navbarDropdownUser"
+              >
+                <li>
+                  <router-link class="dropdown-item" to="/readers"
+                    >Độc giả</router-link
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <router-link class="dropdown-item" to="/users"
+                    >Nhân viên hệ thống</router-link
+                  >
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <router-link class="nav-link fw-bold" to="/book-borrows">
+                Quản lý Mượn sách
+              </router-link>
+            </li>
+          </ul>
+        </div>
+
+        <div class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
           <ul
             class="navbar-nav me-1 mb-2 mb-lg-0 gap-2 w-100"
             v-if="!currentUser"
@@ -84,7 +160,7 @@
 </template>
 
 <script>
-import UserMenu from "./UserMenu.vue";
+import UserMenu from "@/components/UserMenu.vue";
 export default {
   name: "AppHeader",
   components: {
@@ -92,9 +168,10 @@ export default {
   },
   data() {
     return {
-      currentUser: null, // Biến lưu thông tin user
+      currentUser: null,
     };
   },
+  computed: {},
   watch: {
     // theo dõi route thay đổi
     $route() {
@@ -123,11 +200,15 @@ export default {
 
       this.$router.push("/login");
     },
+
     closeMenu() {
       const navButton = document.getElementById("nav-button");
-      if (!navButton.classList.contains("collapsed")) {
-        navButton.click();
-      }
+      const isExpanded = navButton.getAttribute("aria-expanded") === "true";
+      if (isExpanded) navButton.click();
+    },
+    isReader() {
+      if (!this.currentUser) return false;
+      return this.currentUser.role === "reader";
     },
   },
 };

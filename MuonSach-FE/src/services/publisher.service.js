@@ -24,6 +24,4 @@ class PublisherService {
   }
 }
 
-export const adminPublisherService = new PublisherService(
-  "/api/admin/publishers"
-);
+export default new PublisherService("/api/publishers");

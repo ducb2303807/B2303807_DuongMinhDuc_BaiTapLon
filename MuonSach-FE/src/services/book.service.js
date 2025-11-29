@@ -24,5 +24,4 @@ class BookService {
   }
 }
 
-export const adminBookService = new BookService("/api/admin/books");
-// export const userBookService = new BookService("/api/user/books");
+export default new BookService("/api/books");

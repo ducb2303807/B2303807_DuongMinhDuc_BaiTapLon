@@ -7,19 +7,8 @@ class BookService {
     this.Book = client.db().collection("Sach");
   }
 
-  // check khoa ngoai
-  async keyCheck(payload) {
-    const { MaSach, MaNXB } = payload;
-    if (!MaSach) throw new ApiError(400, "MaSach can't be empty");
-    if (await this.Book.findOne({ MaSach: MaSach }))
-      throw new ApiError(400, "MaSach already exists");
-
-    const publisherService = new PublisherService(MongoDB.client);
-    await publisherService.keyCheck(MaNXB);
-  }
   extractBookData(payload) {
     const book = {
-      MaSach: payload.MaSach,
       TenSach: payload.TenSach,
       DonGia: payload.DonGia,
       SoQuyen: payload.SoQuyen,
@@ -48,9 +37,34 @@ class BookService {
   }
 
   async find(filter) {
-    const cursor = await this.Book.find(filter);
+    const cursor = await this.Book.aggregate([
+      // 1. $match: Lọc dữ liệu theo điều kiện (tương đương với filter trong find)
+      {
+        $match: filter,
+      },
+      // 2. $lookup: Thực hiện Join với bảng NHAXUATBAN
+      {
+        $lookup: {
+          from: "NhaXuatBan", // Tên chính xác của collection Nhà xuất bản trong DB
+          localField: "MaNXB", // Tên trường khóa ngoại trong collection SACH (lưu ID của NXB)
+          foreignField: "_id", // Tên trường khóa chính trong collection NHAXUATBAN
+          as: "nxb_info", // Tên field mới sẽ chứa thông tin NXB
+        },
+      },
+
+      // 3. $unwind: (Tùy chọn)
+      // Vì $lookup trả về mảng (ví dụ: nxb_info: [{...}]),
+      // lệnh này giúp "bóc" nó ra thành object (nxb_info: {...}) cho dễ dùng.
+      {
+        $unwind: {
+          path: "$nxb_info",
+          preserveNullAndEmptyArrays: true, // Quan trọng: Nếu sách chưa có NXB thì vẫn hiện sách (Left Join)
+        },
+      },
+    ]);
     return await cursor.toArray();
   }
+
   async findByName(name) {
     return await this.find({
       name: { $regex: new RegExp(name), $options: "i" },

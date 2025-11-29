@@ -3,9 +3,8 @@
 </style>
 
 <template>
-  <div class="form-container mx-auto pb-5">
+  <div class="form-container mx-auto">
     <h1 class="text-center">Đăng ký</h1>
-
     <Form
       @submit="submitRegister"
       :validation-schema="RegisterFormSchema"

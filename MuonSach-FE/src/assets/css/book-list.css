@@ -1,0 +1,76 @@
+.main-layout {
+    height: 80vh;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+.fixed-page-height {
+    height: 100%;
+    overflow: hidden;
+}
+
+.list-column {
+    width: 60%;
+    height: 100%;
+}
+
+.detail-column {
+    width: 40%;
+    height: 100%;
+    background: white;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+}
+
+.list-group-item.active {
+    background-color: #eef5ff;
+    color: #000;
+    border-color: #dee2e6;
+
+    border-left: 4px solid #0d6efd;
+
+    z-index: 0;
+}
+
+/* Khi active thì badge đổi màu cho dễ nhìn */
+.list-group-item.active .badge {
+    background-color: #fff !important;
+    color: #0d6efd !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* 3. RESPONSIVE MOBILE */
+@media (max-width: 991px) {
+    .list-column {
+        width: 100%;
+    }
+
+    .detail-column {
+        display: none;
+    }
+
+    .detail-column.show-mobile {
+        display: block;
+        position: fixed;
+        /* Thoát khỏi khung cha, neo vào màn hình */
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9999;
+        /* Đè lên tất cả */
+        border: none;
+    }
+}
