@@ -32,7 +32,6 @@ export default {
             ? await this.readerLogin(data)
             : await this.staffLogin(data);
 
-        console.log("Login result:", result);
         if (!result.token) {
           alert("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
           return;

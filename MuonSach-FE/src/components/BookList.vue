@@ -1,5 +1,7 @@
 <template>
-  <div class="page container-fluid p-0 fixed-page-height d-flex flex-column">
+  <div
+    class="page p-3 container-fluid p-0 fixed-page-height d-flex flex-column"
+  >
     <div class="row mb-4 align-items-center">
       <div class="col-md-6">
         <h2 class="text-primary fw-bold">
@@ -30,7 +32,7 @@
           <button
             v-for="book in filteredBooks"
             :key="book._id"
-            @click="selectedBook = book"
+            @click="handleSelectBook(book)"
             class="list-group-item list-group-item-action py-3 border-bottom"
             :class="{ active: selectedBook && selectedBook._id === book._id }"
           >
@@ -66,7 +68,6 @@
         <div v-if="selectedBook" class="h-100 bg-white">
           <BookDetails
             :book="selectedBook"
-            :publishers="publishers"
             @close="selectedBook = null"
             @save="handleUpdateBook"
             @delete="handleDeleteBook"
@@ -92,14 +93,11 @@
 
 <script>
 import BookService from "@/services/book.service";
-import BookCard from "@/components/BookCard.vue";
 import BookDetails from "@/components/BookDetails.vue";
 import SearchField from "@/components/SearchField.vue";
-import PublisherService from "@/services/publisher.service";
 export default {
   name: "BookList",
   components: {
-    BookCard,
     BookDetails,
     SearchField,
   },
@@ -111,7 +109,6 @@ export default {
       searchQuery: "",
       searchPlaceholder: "Nhập tên sách, tác giả...",
       selectedBook: null,
-      publishers: [],
     };
   },
   computed: {
@@ -125,6 +122,14 @@ export default {
       );
     },
   },
+  watch: {
+    "$route.params.id": {
+      immediate: true, // Chạy ngay lập tức khi component được load
+      handler(newId) {
+        this.syncSelectedBook(newId);
+      },
+    },
+  },
   mounted() {
     this.getAllBooks();
   },
@@ -132,27 +137,33 @@ export default {
     async getAllBooks() {
       this.loading = true;
       try {
-        const bookList = await BookService.getAll();
-        this.books = bookList;
-        await this.getAllPublishers();
+        this.books = await BookService.getAll();
+
+        const currentIdFromUrl = this.$route.params.id;
+        if (currentIdFromUrl) {
+          this.syncSelectedBook(currentIdFromUrl);
+        }
       } catch (error) {
         console.error("Lỗi:", error);
       } finally {
         this.loading = false;
       }
     },
-    async getAllPublishers() {
-      try {
-        this.publishers = await PublisherService.getAll();
-      } catch (error) {
-        console.log(error);
+    syncSelectedBook(bookId) {
+      if (bookId && this.books.length > 0) {
+        // Tìm sách trong list đã load
+        const foundBook = this.books.find((b) => b._id === bookId);
+        this.selectedBook = foundBook || null;
+      } else {
+        this.selectedBook = null;
       }
     },
     updateSearchQuery(val) {
       this.searchQuery = val;
     },
     handleSelectBook(book) {
-      // Nếu đang chọn đúng sách đó thì đóng lại (toggle)
+      this.$emit("select-book", book);
+
       if (this.selectedBook && this.selectedBook._id === book._id) {
         this.selectedBook = null;
       } else {
@@ -162,10 +173,16 @@ export default {
 
     async handleUpdateBook(updatedBookData) {
       try {
-        // Cập nhật lại UI Local
-        const index = this.books.findIndex((b) => b.id === updatedBookData.id);
+        const updatedBook = await BookService.update(
+          updatedBookData._id,
+          updatedBookData
+        );
+        const index = this.books.findIndex(
+          (b) => b._id === updatedBookData._id
+        );
         if (index !== -1) {
-          this.books.splice(index, 1, updatedBookData);
+          this.books.splice(index, 1, updatedBook);
+          this.selectedBook = updatedBook;
         }
 
         alert("Cập nhật thành công!");
@@ -178,21 +195,13 @@ export default {
       if (!confirm("Bạn có chắc muốn xóa sách này?")) return;
 
       try {
-        // await axios.delete(`http://localhost:3000/api/books/${bookId}`);
-        this.books = this.books.filter((b) => b.id !== bookId);
-        this.isSidebarOpen = false;
+        await BookService.delete(bookId);
+        this.books = this.books.filter((b) => b._id !== bookId);
+        this.selectedBook = null;
         alert("Đã xóa sách!");
       } catch (err) {
         alert("Lỗi khi xóa: " + err.message);
       }
-    },
-
-    formatCurrency(value) {
-      if (!value) return "0 ₫";
-      return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(value);
     },
   },
 };

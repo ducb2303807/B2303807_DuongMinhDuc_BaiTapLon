@@ -52,12 +52,17 @@ class PublisherService {
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     };
     const update = this.extractPublisherData(payload);
-    const result = await this.Publisher.findOneAndUpdate(
+    const updatedPublisher = await this.Publisher.findOneAndUpdate(
       filter,
       { $set: update },
       { returnDocument: "after" }
     );
-    return result;
+    if (!updatedPublisher) {
+      return null;
+    }
+
+    const result = await this.find({ _id: updatedPublisher._id });
+    return result[0];
   }
 
   async delete(id) {

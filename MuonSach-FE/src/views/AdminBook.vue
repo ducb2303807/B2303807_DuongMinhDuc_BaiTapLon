@@ -7,7 +7,7 @@
       </router-link>
     </div>
 
-    <BookList />
+    <BookList @select-book="handleSelectBook" />
   </div>
 </template>
 
@@ -20,6 +20,15 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    handleSelectBook(book) {
+      if (book) {
+        this.$router.push({ name: "AdminBook", params: { id: book._id } });
+      } else {
+        this.$router.push({ name: "AdminBook" });
+      }
+    },
   },
 };
 </script>

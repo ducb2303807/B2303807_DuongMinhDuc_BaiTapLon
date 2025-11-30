@@ -1,0 +1,100 @@
+<template>
+  <div class="book-details-container h-100 d-flex flex-column bg-white">
+    <div
+      class="d-flex justify-content-between align-items-center p-3 border-bottom shadow-sm"
+    >
+      <h5 class="mb-0 text-primary fw-bold">
+        <i class="fas fa-info-circle me-2"></i>Chi tiết NXB
+      </h5>
+      <button class="btn-close" @click="$emit('close')"></button>
+    </div>
+
+    <div class="flex-grow-1 overflow-auto p-4 hide-scrollbar">
+      <div v-if="!isEditing">
+        <div class="text-center mb-4">
+          <div
+            class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle p-4 border border-dashed mb-3"
+            style="width: 100px; height: 100px"
+          >
+            <i class="fas fa-building fa-3x text-primary opacity-75"></i>
+          </div>
+          <h4 class="fw-bold text-dark mb-1">{{ publisher.TenNXB }}</h4>
+          <span class="badge bg-secondary">ID: {{ publisher._id }}</span>
+        </div>
+
+        <div class="card border-0 shadow-sm bg-light mb-4">
+          <div class="card-body">
+            <h6 class="text-uppercase text-muted small fw-bold mb-2">
+              <i class="fas fa-map-marked-alt me-2"></i>Địa chỉ liên hệ
+            </h6>
+            <p class="mb-0 fs-6 fw-medium text-dark">
+              {{ publisher.DiaChi }}
+            </p>
+          </div>
+        </div>
+
+        <div v-if="isStaff()" class="d-flex justify-content-end gap-2 mt-5">
+          <button
+            type="button"
+            class="btn fw-bold px-4 btn-warning"
+            @click="isEditing = true"
+          >
+            <i class="fas fa-edit me-1"></i>Sửa
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger fw-bold px-4"
+            @click="$emit('delete', publisher._id)"
+          >
+            <i class="fas fa-trash me-1"></i>Xóa
+          </button>
+        </div>
+      </div>
+
+      <div v-else>
+        <h4 class="text-center text-uppercase text-primary fw-bold mb-4">
+          Cập nhật thông tin
+        </h4>
+        <PublisherEditForm
+          :publisher="publisher"
+          @save-changes="saveChanges"
+          @cancel-edit="cancelEdit"
+        ></PublisherEditForm>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { isStaff } from "@/utils/auth.utils";
+import PublisherEditForm from "@/components/PublisherEditForm.vue";
+
+export default {
+  components: {
+    PublisherEditForm,
+  },
+  props: {
+    publisher: { type: Object, required: true },
+  },
+  emits: ["close", "save", "delete"],
+  data() {
+    return {
+      isEditing: false,
+    };
+  },
+  methods: {
+    isStaff,
+    saveChanges(updatedPub) {
+      this.$emit("save", updatedPub);
+      this.isEditing = false;
+    },
+    cancelEdit() {
+      this.isEditing = false;
+    },
+  },
+};
+</script>
+
+<style scoped>
+@import "@/assets/css/details.css";
+</style>

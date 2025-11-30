@@ -1,0 +1,29 @@
+.info-group {
+    padding-bottom: 8px;
+}
+
+
+.hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+}
+
+.z-1 {
+    z-index: 1;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.shadow-inner-top {
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
+}

@@ -3,7 +3,7 @@ const MongoDB = require("../utils/mongodb.util");
 const PublisherService = require("../services/publisher.service");
 
 exports.create = async (req, res, next) => {
-  if (!req.body?.MaNXB) {
+  if (!req.body?.TenNXB) {
     return next(new ApiError(400, "MaNXB can't be empty"));
   }
   try {
@@ -60,7 +60,7 @@ exports.update = async (req, res, next) => {
     if (!document) {
       return next(new ApiError(404, "Publisher not found"));
     }
-    return res.send({ message: "Publisher was updated successfully" });
+    return res.send(document);
   } catch (error) {
     return next(
       new ApiError(500, `Error updating publisher with id=${req.params.id}`)

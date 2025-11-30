@@ -1,25 +1,59 @@
 import { jwtDecode } from "jwt-decode";
 
+const TOKEN_KEY = "token";
+const USER_KEY = "user";
+
+const READER_ROLE = "reader";
+const STAFF_ROLE = "staff";
+
 export function isTokenValid() {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem(TOKEN_KEY);
   if (!token) return false;
+
+  const userStr = localStorage.getItem(USER_KEY);
+  if (!userStr) return false;
 
   try {
     const decoded = jwtDecode(token);
-    // decoded.exp là thời gian hết hạn (tính bằng Giây)
-    // Date.now() là thời gian hiện tại (tính bằng Mili-giây) -> phải chia 1000
     const currentTime = Date.now() / 1000;
 
-    // Nếu thời gian hết hạn < thời gian hiện tại -> Token đã chết
     if (decoded.exp < currentTime) {
-      // Tiện tay xóa luôn cho sạch
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      logout();
       return false;
     }
-
-    return true; // Token còn sống
+    return true;
   } catch (error) {
-    return false; // Token bị lỗi format
+    logout();
+    return false;
   }
+}
+
+export function getUserData() {
+  if (!isTokenValid()) return null;
+
+  const userStr = localStorage.getItem(USER_KEY);
+  try {
+    return JSON.parse(userStr);
+  } catch (e) {
+    logout();
+    return null;
+  }
+}
+
+export function getUserRole() {
+  const user = getUserData();
+  return user?.role || null;
+}
+
+export function logout() {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
+}
+
+export function isReader() {
+  return getUserRole() === READER_ROLE;
+}
+
+export function isStaff() {
+  return getUserRole() === STAFF_ROLE;
 }

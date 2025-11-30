@@ -8,8 +8,17 @@
   >
     <div class="container-fluid">
       <router-link
+        v-if="!isStaff()"
         class="navbar-brand d-flex justify-content-center logo ms-2"
+        exact
         to="/"
+      >
+        <img class="img-fluid" src="../assets/image/CTU_logo.png" alt="logo" />
+      </router-link>
+      <router-link
+        v-else
+        class="navbar-brand d-flex justify-content-center logo ms-2"
+        to="/admin"
       >
         <img class="img-fluid" src="../assets/image/CTU_logo.png" alt="logo" />
       </router-link>
@@ -31,10 +40,16 @@
         id="navbarSupportedContent"
       >
         <!-- // header cho độc giả // -->
-        <div v-if="isReader()">
+        <div v-if="!isStaff()">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
             <li class="nav-item">
-              <router-link class="nav-link fw-bold" aria-current="page" to="/">
+              <router-link
+                class="nav-link fw-bold"
+                aria-current="page"
+                to="/"
+                active-class=" "
+                exact-active-class="router-link-active"
+              >
                 <i class="fas fa-home me-1"></i>Trang chủ
               </router-link>
             </li>
@@ -59,7 +74,13 @@
         <div v-else>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
             <li class="nav-item">
-              <router-link class="nav-link fw-bold" aria-current="page" to="/">
+              <router-link
+                class="nav-link fw-bold"
+                aria-current="page"
+                to="/admin"
+                active-class=" "
+                exact-active-class="router-link-active"
+              >
                 <i class="fas fa-home me-1"></i>Trang chủ
               </router-link>
             </li>
@@ -80,12 +101,12 @@
                 aria-labelledby="navbarDropdownCatalog"
               >
                 <li>
-                  <router-link class="dropdown-item" to="/admin/books"
+                  <router-link class="dropdown-item" :to="{ name: 'AdminBook' }"
                     >Quản lý Sách</router-link
                   >
                 </li>
                 <li>
-                  <router-link class="dropdown-item" to="/publishers"
+                  <router-link class="dropdown-item" to="/admin/publishers"
                     >Nhà xuất bản</router-link
                   >
                 </li>
@@ -108,13 +129,13 @@
                 aria-labelledby="navbarDropdownUser"
               >
                 <li>
-                  <router-link class="dropdown-item" to="/readers"
+                  <router-link class="dropdown-item" to="/admin/readers"
                     >Độc giả</router-link
                   >
                 </li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
-                  <router-link class="dropdown-item" to="/users"
+                  <router-link class="dropdown-item" to="/admin/staffs"
                     >Nhân viên hệ thống</router-link
                   >
                 </li>
@@ -122,7 +143,7 @@
             </li>
 
             <li class="nav-item">
-              <router-link class="nav-link fw-bold" to="/book-borrows">
+              <router-link class="nav-link fw-bold" to="/admin/book-borrows">
                 Quản lý Mượn sách
               </router-link>
             </li>
@@ -160,6 +181,7 @@
 </template>
 
 <script>
+import { logout as appLogout } from "@/utils/auth.utils";
 import UserMenu from "@/components/UserMenu.vue";
 export default {
   name: "AppHeader",
@@ -194,10 +216,8 @@ export default {
       }
     },
     logout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      appLogout();
       this.currentUser = null;
-
       this.$router.push("/login");
     },
 
@@ -206,9 +226,9 @@ export default {
       const isExpanded = navButton.getAttribute("aria-expanded") === "true";
       if (isExpanded) navButton.click();
     },
-    isReader() {
+    isStaff() {
       if (!this.currentUser) return false;
-      return this.currentUser.role === "reader";
+      return this.currentUser.role === "staff";
     },
   },
 };

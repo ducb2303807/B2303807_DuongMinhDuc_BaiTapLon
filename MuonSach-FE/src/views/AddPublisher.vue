@@ -1,46 +1,42 @@
 <template>
   <div class="container pt-2">
     <h2 class="text-center text-uppercase">Thêm sách</h2>
-    <BookEditForm
+    <PublisherEditForm
       @save-changes="saveChanges"
       @cancel-edit="cancelEdit"
       :book="book"
-    ></BookEditForm>
+    ></PublisherEditForm>
   </div>
 </template>
 
 <script>
-import BookEditForm from "@/components/BookEditForm.vue";
-import BookService from "@/services/book.service";
+import PublisherEditForm from "@/components/PublisherEditForm.vue";
+import PublisherService from "@/services/publisher.service";
 
 export default {
   components: {
-    BookEditForm,
+    PublisherEditForm,
   },
 
   data() {
-    this.book = {
-      TenSach: "",
-      DonGia: 0,
-      SoQuyen: 0,
-      NamXuatBan: 0,
-      MaNXB: "",
-      TacGia: "",
+    this.publisher = {
+      TenNXB: "",
+      DiaChi: "",
     };
     return {};
   },
   methods: {
-    async saveChanges(book) {
+    async saveChanges(publisher) {
       try {
-        await BookService.create(book);
+        await PublisherService.create(publisher);
         alert("Thêm thành công");
-        this.$router.push("/admin/books");
+        this.$router.push("/admin/publishers");
       } catch (error) {
         console.log(error);
       }
     },
     cancelEdit() {
-      this.$router.push("/admin/books");
+      this.$router.push("/admin/publishers");
     },
   },
 };

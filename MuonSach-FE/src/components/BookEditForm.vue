@@ -1,20 +1,17 @@
-<style scoped>
-@import "@/assets/css/form.css";
-</style>
-
 <template>
   <div class="p-3">
     <Form
       class="mx-auto form-container"
       :validation-schema="bookFormSchema"
-      :initial-values="editingData"
-      @submit="submitEdit"
+      :initial-values="localBook"
+      @submit="saveChanges"
     >
       <div class="mb-3">
         <label for="TenSach" class="form-label small fw-bold text-secondary"
           >Tên sách</label
         >
         <Field
+          id="TenSach"
           name="TenSach"
           type="text"
           class="form-control"
@@ -28,6 +25,7 @@
           >Tác giả</label
         >
         <Field
+          id="TacGia"
           name="TacGia"
           type="text"
           class="form-control"
@@ -56,14 +54,19 @@
             class="form-label small fw-bold text-secondary"
             >Năm Xuất Bản</label
           >
-          <Field name="NamXuatBan" type="number" class="form-control" />
+          <Field
+            id="NamXuatBan"
+            name="NamXuatBan"
+            type="number"
+            class="form-control"
+          />
           <ErrorMessage name="NamXuatBan" class="text-danger small" />
         </div>
         <div class="col-6">
           <label for="DonGia" class="form-label small fw-bold text-secondary"
-            >Giá tiền</label
+            >Giá tiền sách</label
           >
-          <Field name="DonGia" type="number" class="form-control" />
+          <Field id="DonGia" name="DonGia" type="number" class="form-control" />
           <ErrorMessage name="DonGia" class="text-danger small" />
         </div>
       </div>
@@ -72,12 +75,29 @@
         <label for="SoQuyen" class="form-label small fw-bold text-secondary"
           >Số lượng tồn</label
         >
-        <Field name="SoQuyen" type="number" class="form-control" />
+        <Field id="SoQuyen" name="SoQuyen" type="number" class="form-control" />
         <ErrorMessage name="SoQuyen" class="text-danger small" />
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button
+          type="button"
+          class="btn btn-secondary px-4"
+          @click="cancelEdit"
+        >
+          Hủy bỏ
+        </button>
+        <button type="submit" class="btn btn-primary fw-bold px-4">
+          <i class="fas fa-save me-1"></i> Lưu lại
+        </button>
       </div>
     </Form>
   </div>
 </template>
+
+<style scoped>
+@import "@/assets/css/form.css";
+</style>
 
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
@@ -93,14 +113,21 @@ export default {
   props: {
     book: { Object, require: true },
   },
-  emit: [],
+  emits: ["cancel-edit", "save-changes"],
+
   data() {
     const bookFormSchema = yup.object().shape({
       TenSach: yup
         .string()
         .required("Tên sách không được để trống")
-        .min(2, "Tên sách phải có ít nhất 2 ký tự"),
-      TacGia: yup.string().required("Tác giả không được để trống"),
+        .min(2, "Tên sách phải có ít nhất 2 ký tự")
+        .max(255, "Tối đa 100 ký tự"),
+
+      TacGia: yup
+        .string()
+        .required("Tác giả không được để trống")
+        .min(3, "Tác giả tối thiểu 3 ký tự")
+        .max(100, "Tên tác giả tối đa 100 ký tự"),
       MaNXB: yup.string().required("Vui lòng chọn nhà xuất bản"),
       NamXuatBan: yup
         .number()
@@ -136,6 +163,16 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    cancelEdit() {
+      this.$emit("cancel-edit");
+    },
+    saveChanges(values) {
+      const updatedBook = {
+        ...this.localBook,
+        ...values,
+      };
+      this.$emit("save-changes", updatedBook);
     },
   },
 };

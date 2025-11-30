@@ -13,7 +13,7 @@ class BookService {
       DonGia: payload.DonGia,
       SoQuyen: payload.SoQuyen,
       NamXuatBan: payload.NamXuatBan,
-      MaNXB: payload.MaNXB,
+      MaNXB: new ObjectId(payload.MaNXB),
       TacGia: payload.TacGia,
     };
     // remove undefined fields
@@ -65,12 +65,6 @@ class BookService {
     return await cursor.toArray();
   }
 
-  async findByName(name) {
-    return await this.find({
-      name: { $regex: new RegExp(name), $options: "i" },
-    });
-  }
-
   async findById(id) {
     return await this.Book.findOne({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
@@ -82,12 +76,19 @@ class BookService {
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     };
     const update = this.extractBookData(payload);
-    const result = await this.Book.findOneAndUpdate(
+
+    const updatedBook = await this.Book.findOneAndUpdate(
       filter,
       { $set: update },
-      { returnDocument: "after" }
+      { returnDocument: "after" } // Trả về document sau khi update
     );
-    return result;
+
+    if (!updatedBook) {
+      return null;
+    }
+
+    const result = await this.find({ _id: updatedBook._id });
+    return result[0];
   }
 
   async delete(id) {
