@@ -115,14 +115,14 @@ export default {
             "Xem danh sách độc giả, khóa tài khoản vi phạm hoặc cấp lại mật khẩu.",
           icon: "fas fa-users",
           colorName: "info",
-          endPoint: "/admin/users",
+          endPoint: "/admin/readers",
         },
         {
           title: "Quản lý Nhân viên",
           description:
             "Phân quyền và quản lý danh sách nhân viên trong hệ thống.",
           icon: "fas fa-user-tie",
-          colorName: "danger", // Đỏ
+          colorName: "danger",
           endPoint: "/admin/staffs",
         },
       ],

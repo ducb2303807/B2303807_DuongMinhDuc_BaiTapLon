@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/index.js");
 
 exports.create = async (req, res, next) => {
-  if (!req.body?.MSNV || !req.body?.Password) {
-    return next(new ApiError(400, "MSNV and Password can't be empty"));
+  if (!req.body?.Username || !req.body?.Password) {
+    return next(new ApiError(400, "Username and Password can't be empty"));
   }
   try {
     const staffService = new StaffService(MongoDB.client);
@@ -16,6 +16,24 @@ exports.create = async (req, res, next) => {
     return next(
       new ApiError(500, "An error occurred while creating the staff")
     );
+  }
+};
+
+exports.findUsername = async (req, res, next) => {
+  try {
+    const staffService = new StaffService(MongoDB.client);
+
+    const { Username } = req.query;
+
+    if (!Username) {
+      return next(new ApiError(400, "Username is required"));
+    }
+    const document = await staffService.findUsername(Username);
+
+    return res.send({ exists: !!document });
+  } catch (error) {
+    console.log(error);
+    return next(new ApiError(500, "An error occurred while checking username"));
   }
 };
 
@@ -86,7 +104,7 @@ exports.update = async (req, res, next) => {
     if (!document) {
       return next(new ApiError(404, "Staff not found"));
     }
-    return res.send({ message: "Staff was updated successfully" });
+    return res.send(document);
   } catch (error) {
     return next(
       new ApiError(500, `Error updating staff with id=${req.params.id}`)

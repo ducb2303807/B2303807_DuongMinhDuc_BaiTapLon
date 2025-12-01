@@ -1,9 +1,6 @@
 <template>
   <div class="container">
-    <RegisterForm
-      @submit:resister="handleRegister"
-      :check-duplicate-username="checkDuplicateUsername"
-    ></RegisterForm>
+    <RegisterForm @submit:resister="handleRegister"></RegisterForm>
   </div>
 </template>
 
@@ -16,17 +13,6 @@ export default {
     RegisterForm,
   },
   methods: {
-    async checkDuplicateUsername(username) {
-      if (!username || username.length === 0) {
-        return false;
-      }
-      const payload = {
-        Username: username,
-      };
-      const reader = await ReaderService.getAll(payload);
-      console.log(reader);
-      return reader.length === 0;
-    },
     async handleRegister(values) {
       const reader = {
         HoLot: values.HoLot,

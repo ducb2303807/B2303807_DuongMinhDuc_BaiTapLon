@@ -57,3 +57,40 @@ export function isReader() {
 export function isStaff() {
   return getUserRole() === STAFF_ROLE;
 }
+
+export async function isReaderUsernameAvailable(username) {
+  const module = await import("@/services/reader.service");
+  const ReaderService = module.default;
+  // 2. Nếu không có username, coi như hợp lệ (để rule 'required' lo việc bắt lỗi trống)
+  if (!username || username.trim().length === 0) return true;
+  try {
+    const response = await ReaderService.checkUsername({ Username: username });
+
+    if (response && response.exists === true) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("Lỗi khi check username:", error);
+    return false;
+  }
+}
+
+export async function isStaffUsernameAvailable(username) {
+  const module = await import("@/services/staff.service");
+  const StaffService = module.default;
+
+  if (!username || username.trim().length === 0) return true;
+
+  try {
+    const response = await StaffService.checkUsername({ Username: username });
+
+    if (response && response.exists === true) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("Lỗi khi check username:", error);
+    return false;
+  }
+}

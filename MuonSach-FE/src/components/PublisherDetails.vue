@@ -11,15 +11,16 @@
 
     <div class="flex-grow-1 overflow-auto p-4 hide-scrollbar">
       <div v-if="!isEditing">
-        <div class="text-center mb-4">
-          <div
-            class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle p-4 border border-dashed mb-3"
-            style="width: 100px; height: 100px"
-          >
-            <i class="fas fa-building fa-3x text-primary opacity-75"></i>
+        <div
+          class="text-center mb-4 bg-light rounded-3 p-4 border border-dashed"
+        >
+          <i class="fas fa-building fa-4x text-primary opacity-75"></i>
+          <h4 class="fw-bold mt-3 mb-1 text-dark text-break">
+            {{ publisher.TenNXB }}
+          </h4>
+          <div class="badge bg-secondary rounded-pill">
+            ID: {{ publisher._id }}
           </div>
-          <h4 class="fw-bold text-dark mb-1">{{ publisher.TenNXB }}</h4>
-          <span class="badge bg-secondary">ID: {{ publisher._id }}</span>
         </div>
 
         <div class="card border-0 shadow-sm bg-light mb-4">

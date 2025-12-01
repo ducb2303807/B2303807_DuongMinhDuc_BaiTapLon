@@ -121,19 +121,19 @@ export default {
         .string()
         .required("Tên sách không được để trống")
         .min(2, "Tên sách phải có ít nhất 2 ký tự")
-        .max(255, "Tối đa 100 ký tự"),
+        .max(100, "Tên sách tối đa 100 ký tự"),
 
       TacGia: yup
         .string()
         .required("Tác giả không được để trống")
         .min(3, "Tác giả tối thiểu 3 ký tự")
-        .max(100, "Tên tác giả tối đa 100 ký tự"),
+        .max(50, "Tên tác giả tối đa 50 ký tự"),
       MaNXB: yup.string().required("Vui lòng chọn nhà xuất bản"),
       NamXuatBan: yup
         .number()
         .typeError("Năm xuất bản phải là số")
         .required("Năm xuất bản là bắt buộc")
-        .min(1000, "Năm không hợp lệ")
+        .min(1, "Năm không hợp lệ")
         .max(new Date().getFullYear(), "Năm không được lớn hơn hiện tại"),
       DonGia: yup
         .number()

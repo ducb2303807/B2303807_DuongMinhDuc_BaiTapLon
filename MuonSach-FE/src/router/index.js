@@ -101,6 +101,46 @@ const routes = [
       title: "Thêm nhà xuất bản",
     },
   },
+  // 5. Quản lý Độc giả
+  {
+    path: "/admin/readers/:id?",
+    name: "AdminReader",
+    props: true,
+    component: () => import("@/views/AdminReader.vue"),
+    meta: {
+      ...staffMetaTemplate,
+      title: "Quản lý độc giả",
+    },
+  },
+  {
+    path: "/admin/readers/add",
+    name: "ReaderAdd",
+    component: () => import("@/views/AddReader.vue"),
+    meta: {
+      ...staffMetaTemplate,
+      title: "Thêm độc giả",
+    },
+  },
+  // 5. Quản lý Nhân viên
+  {
+    path: "/admin/staffs/:id?",
+    name: "AdminStaff",
+    props: true,
+    component: () => import("@/views/AdminStaff.vue"),
+    meta: {
+      ...staffMetaTemplate,
+      title: "Quản lý nhân viên",
+    },
+  },
+  {
+    path: "/admin/staffs/add",
+    name: "StaffAdd",
+    component: () => import("@/views/AddStaff.vue"),
+    meta: {
+      ...staffMetaTemplate,
+      title: "Thêm nhân viên",
+    },
+  },
 
   {
     path: "/:pathMatch(.*)*",

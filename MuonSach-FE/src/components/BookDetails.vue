@@ -12,14 +12,14 @@
     <div class="flex-grow-1 overflow-auto p-4 hide-scrollbar">
       <!-- // xem // -->
       <div v-if="!isEditing">
-        <h4 class="fw-bold mb-3 text-break text-dark">
-          {{ book.TenSach }}
-        </h4>
         <div
           class="text-center mb-4 bg-light rounded-3 p-4 border border-dashed"
         >
-          <i class="fas fa-book fa-4x text-muted opacity-50"></i><br></br>
-          <div class="badge bg-secondary">ID: {{ book._id }}</div>
+          <i class="fas fa-book fa-4x text-primary opacity-75"></i>
+          <h4 class="fw-bold mt-3 mb-1 text-dark text-break">
+            {{ book.TenSach }}
+          </h4>
+          <div class="badge bg-secondary rounded-pill">ID: {{ book._id }}</div>
         </div>
 
         <div class="d-flex flex-column gap-3">
@@ -105,12 +105,13 @@
 
           <div v-else class="d-flex justify-content-end">
             <button
-                type="button"
-                class="btn btn-primary fw-bold px-4"
-                :disabled="book.SoQuyen === 0"
-              >
-                <i class="fa-solid fa-book-bookmark me-1"></i>Mượn sách
-              </button>
+              type="button"
+              class="btn btn-primary fw-bold px-4"
+              :disabled="book.SoQuyen === 0"
+              @click="showBorrowModal = true"
+            >
+              <i class="fa-solid fa-book-bookmark me-1"></i>Mượn sách
+            </button>
           </div>
         </div>
       </div>
@@ -125,6 +126,13 @@
         ></BookEditForm>
       </div>
     </div>
+
+    <BorrowBookModal
+      v-if="showBorrowModal"
+      :book="book"
+      @close="showBorrowModal = false"
+      @confirm="handleConfirmBorrow"
+    />
   </div>
 </template>
 
@@ -132,18 +140,22 @@
 import { isStaff } from "@/utils/auth.utils";
 import { formatCurrency } from "@/utils/format-currency.utils";
 import BookEditForm from "@/components/BookEditForm.vue";
+import BorrowBookModal from "@/components/BorrowBookModal.vue";
+import BookBorrowService from "@/services/book-borrow.service";
 
 export default {
   components: {
     BookEditForm,
+    BorrowBookModal,
   },
   props: {
     book: { Object, required: true },
   },
-  emits: ["close", "save", "delete"],
+  emits: ["close", "save", "delete", "sync-book"],
   data() {
     return {
       isEditing: false,
+      showBorrowModal: false,
     };
   },
   methods: {
@@ -155,6 +167,27 @@ export default {
     },
     cancelEdit() {
       this.isEditing = false;
+    },
+    async handleConfirmBorrow(payload) {
+      try {
+        await BookBorrowService.create(payload);
+        alert(
+          "Đăng ký mượn sách thành công! Bạn có thể đến thư viện mượn sách"
+        );
+
+        const updatedBook = { ...this.book };
+        updatedBook.SoQuyen = updatedBook.SoQuyen - 1;
+
+        console.log(updatedBook);
+        this.$emit("sync-book", updatedBook);
+        this.showBorrowModal = false;
+      } catch (error) {
+        console.error(error);
+        alert(
+          "Lỗi khi mượn sách: " +
+            (error.response?.data?.message || error.message)
+        );
+      }
     },
   },
 };

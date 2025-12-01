@@ -1,17 +1,19 @@
 const { ObjectId } = require("mongodb");
+const MongoDB = require("../utils/mongodb.util");
+const BookService = require("../services/book.service");
 
 class BookBorrowService {
   constructor(client) {
     this.BookBorrow = client.db().collection("TheoDoiMuonSach");
   }
 
-  extractTBookBorrowData(payload) {
+  extractBookBorrowData(payload) {
     const bookBorrow = {
       MaDocGia: payload.MaDocGia,
       MaSach: payload.MaSach,
       MaNhanVien: payload.MaNhanVien,
       NgayMuon: payload.NgayMuon,
-      NgayTra: payload.NgayTra,
+      SoNgayMuon: payload.SoNgayMuon,
       TrangThai: payload.TrangThai,
     };
 
@@ -22,15 +24,21 @@ class BookBorrowService {
   }
 
   async create(payload) {
-    const bookBorrow = this.extractTBookBorrowData(payload);
+    const bookBorrow = this.extractBookBorrowData(payload);
     const result = await this.BookBorrow.findOneAndUpdate(
       bookBorrow,
-      { $set: { TrangThai: payload.TrangThai || "Đang mượn" } },
+      { $set: { TrangThai: payload.TrangThai || "Chờ duyệt" } },
       {
         returnDocument: "after",
         upsert: true,
       }
     );
+
+    if (result) {
+      const bookService = new BookService(MongoDB.client);
+      console.log(`Mã sách ${payload.MaSach}`);
+      const book = await bookService.reserveBook(payload.MaSach);
+    }
     return result;
   }
 
@@ -108,28 +116,33 @@ class BookBorrowService {
     return await cursor.toArray();
   }
 
-  async findByName(name) {
-    return await this.find({
-      name: { $regex: new RegExp(name), $options: "i" },
-    });
-  }
-
   async findById(id) {
-    return await this.BookBorrow.findOne({
+    const bb = await this.find({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     });
+    return bb[0] || null;
   }
 
   async update(id, payload) {
     const filter = {
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     };
+    if (padload.TrangThai === "Đã trả") {
+      const bookService = new BookService(MongoDB.client);
+      const book = await bookService.returnBook(payload.MaSach);
+    }
     const update = this.extractTBookBorrowData(payload);
-    const result = await this.BookBorrow.findOneAndUpdate(
+    const updatedBookBorrow = await this.BookBorrow.findOneAndUpdate(
       filter,
       { $set: update },
       { returnDocument: "after" }
     );
+
+    if (!updatedBookBorrow) {
+      return null;
+    }
+
+    const result = await this.find({ _id: updatedBookBorrow._id });
     return result;
   }
 

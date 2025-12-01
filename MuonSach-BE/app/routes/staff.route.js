@@ -9,7 +9,7 @@ router
   .delete(staffController.deleteAll);
 
 router.route("/login").post(staffController.login);
-
+router.route("/check-username").get(staffController.findUsername);
 router
   .route("/:id")
   .get(staffController.findOne)

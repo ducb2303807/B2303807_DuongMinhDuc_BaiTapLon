@@ -10,6 +10,8 @@ router
 
 router.route("/login").post(readerController.login);
 
+router.route("/check-username").get(readerController.findUsername);
+
 router
   .route("/:id")
   .get(readerController.findOne)

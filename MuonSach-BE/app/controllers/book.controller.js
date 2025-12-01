@@ -4,7 +4,6 @@ const BookService = require("../services/book.service");
 
 exports.create = async (req, res, next) => {
   if (!req.body?.TenSach) {
-    // Sửa MaSach thành TenSach vì DB mới dùng _id tự sinh
     return next(new ApiError(400, "Tên sách không được để trống"));
   }
   try {

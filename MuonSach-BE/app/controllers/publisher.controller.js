@@ -21,12 +21,7 @@ exports.findAll = async (req, res, next) => {
   let documents = [];
   try {
     const publisherService = new PublisherService(MongoDB.client);
-    const { TenNXB } = req.query;
-    if (TenNXB) {
-      documents = await publisherService.findByName(TenNXB);
-    } else {
-      documents = await publisherService.find({});
-    }
+    documents = await publisherService.find({});
   } catch (error) {
     return next(
       new ApiError(500, "An error occurred while retrieving publisher")

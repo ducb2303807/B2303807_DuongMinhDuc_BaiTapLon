@@ -39,12 +39,6 @@ class StaffService {
     return await cursor.toArray();
   }
 
-  async findByName(name) {
-    return await this.find({
-      HoTenNV: { $regex: new RegExp(name), $options: "i" },
-    });
-  }
-
   async findUsername(username) {
     return await this.Staff.findOne({
       Username: { $regex: new RegExp(`^${username}$`), $options: "i" },
@@ -52,7 +46,7 @@ class StaffService {
   }
 
   async findById(id) {
-    return await this.Staff.findOne({
+    return await this.find({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     });
   }

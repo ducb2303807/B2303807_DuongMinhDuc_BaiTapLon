@@ -40,12 +40,6 @@ class ReaderService {
     return await cursor.toArray();
   }
 
-  async findByName(name) {
-    return await this.find({
-      Username: { $regex: new RegExp(`^${name}$`), $options: "i" },
-    });
-  }
-
   async findUsername(username) {
     return await this.Reader.findOne({
       Username: { $regex: new RegExp(`^${username}$`), $options: "i" },

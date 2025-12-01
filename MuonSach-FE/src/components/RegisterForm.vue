@@ -128,6 +128,7 @@
 <script>
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import { checkDuplicateReaderUsername } from "@/utils/auth.utils";
 
 export default {
   name: "LoginForm",
@@ -136,26 +137,26 @@ export default {
     Field,
     ErrorMessage,
   },
-  props: {
-    checkDuplicateUsername: {
-      type: Function,
-      required: true,
-    },
-  },
   emits: ["submit:resister"],
   data() {
     const RegisterFormSchema = yup.object({
-      HoLot: yup.string().required("Họ không được để trống"),
-      Ten: yup.string().required("Tên không được để trống"),
+      HoLot: yup
+        .string()
+        .required("Họ không được để trống")
+        .max(30, "Tối đa 30 ký tự"),
+      Ten: yup
+        .string()
+        .required("Tên không được để trống")
+        .max(30, "Tối đa 30 ký tự"),
       Username: yup
         .string()
         .min(5, "Tên đăng nhập phải có ít nhất 5 ký tự")
-        .max(255, "Tên đăng nhập không được vượt quá 255 ký tự")
+        .max(100, "Tên đăng nhập không được vượt quá 100 ký tự")
         .test(
           "validate-username",
           "Tên đăng nhập đã tồn tại",
           async (value) => {
-            return await this.checkDuplicateUsername(value);
+            return await checkDuplicateReaderUsername(value);
           }
         )
         .required("Tên đăng nhập không được để trống"),
@@ -167,7 +168,10 @@ export default {
       PasswordConfirm: yup
         .string()
         .oneOf([yup.ref("Password")], "Mật khẩu nhập lại không khớp"),
-      NgaySinh: yup.date().required("Ngày sinh không được để trống"),
+      NgaySinh: yup
+        .date()
+        .max(new Date(), "Ngày sinh không được lớn hơn ngày hiện tại")
+        .required("Ngày sinh không được để trống"),
       GioiTinh: yup.string().required("Giới tính không được để trống"),
       SoDienThoai: yup
         .string()
@@ -179,6 +183,7 @@ export default {
     };
   },
   methods: {
+    checkDuplicateReaderUsername,
     submitRegister(values) {
       this.$emit("submit:resister", values);
     },

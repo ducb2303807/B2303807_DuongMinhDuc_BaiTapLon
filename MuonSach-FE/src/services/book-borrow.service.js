@@ -4,7 +4,7 @@ class BookBorrowService {
   constructor(baseUrl) {
     this.api = createApiClient(baseUrl);
   }
-  async getAll() {
+  async getAll(data = {}) {
     return (await this.api.get("/")).data;
   }
   async create(data) {
@@ -24,9 +24,4 @@ class BookBorrowService {
   }
 }
 
-export const adminBookBorrowService = new BookBorrowService(
-  "/api/admin/book-borrows"
-);
-export const userBookBorrowService = new BookBorrowService(
-  "/api/user/:id/book-borrows"
-);
+export default new BookBorrowService("/api/book-borrows");

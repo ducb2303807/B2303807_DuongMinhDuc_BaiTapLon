@@ -6,7 +6,7 @@ const config = require("../config/index.js");
 
 exports.create = async (req, res, next) => {
   if (!req.body?.Username || !req.body?.Password) {
-    return next(new ApiError(400, "MaDocGia and Password can't be empty"));
+    return next(new ApiError(400, "Username and Password can't be empty"));
   }
   try {
     const readerService = new ReaderService(MongoDB.client);
@@ -23,18 +23,32 @@ exports.findAll = async (req, res, next) => {
   let documents = [];
   try {
     const readerService = new ReaderService(MongoDB.client);
-    const { Username } = req.query;
-    if (Username) {
-      documents = await readerService.findByName(Username);
-    } else {
-      documents = await readerService.find({});
-    }
+    documents = await readerService.find({});
   } catch (error) {
     return next(
       new ApiError(500, "An error occurred while retrieving readers")
     );
   }
   return res.send(documents);
+};
+
+exports.findUsername = async (req, res, next) => {
+  try {
+    const readerService = new ReaderService(MongoDB.client);
+
+    const { Username } = req.query;
+
+    if (!Username) {
+      return next(new ApiError(400, "Username is required"));
+    }
+    const document = await readerService.findUsername(Username);
+
+    console.log(document);
+    return res.send({ exists: !!document });
+  } catch (error) {
+    console.log(error);
+    return next(new ApiError(500, "An error occurred while checking username"));
+  }
 };
 
 exports.login = async (req, res, next) => {
@@ -56,7 +70,7 @@ exports.login = async (req, res, next) => {
     return res.send({
       token: token,
       user: {
-        id: reader._id,
+        _id: reader._id,
         Ten: reader.Ten,
         Username: reader.Username,
         role: "reader",
@@ -92,7 +106,7 @@ exports.update = async (req, res, next) => {
     if (!document) {
       return next(new ApiError(404, "Reader not found"));
     }
-    return res.send({ message: "Reader was updated successfully" });
+    return res.send(document);
   } catch (error) {
     return next(
       new ApiError(500, `Error updating reader with id=${req.params.id}`)

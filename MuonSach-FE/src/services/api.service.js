@@ -14,12 +14,8 @@ export default (baseURL) => {
   });
   instance.interceptors.request.use(
     (config) => {
-      // Lấy token từ LocalStorage
       const token = localStorage.getItem("token");
-
-      // Nếu có token -> Đính kèm vào Header
       if (token) {
-        // Cấu trúc chuẩn: "Bearer <token>"
         config.headers["Authorization"] = `Bearer ${token}`;
       }
       return config;

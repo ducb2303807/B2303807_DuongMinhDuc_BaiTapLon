@@ -35,16 +35,11 @@ class PublisherService {
     return await cursor.toArray();
   }
 
-  async findByName(name) {
-    return await this.find({
-      TenNXB: { $regex: new RegExp(name), $options: "i" },
-    });
-  }
-
   async findById(id) {
-    return await this.Publisher.findOne({
+    const publisher = await this.find({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     });
+    return publisher[0] || null;
   }
 
   async update(id, payload) {

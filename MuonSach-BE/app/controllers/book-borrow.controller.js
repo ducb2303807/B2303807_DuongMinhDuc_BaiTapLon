@@ -1,7 +1,6 @@
 const ApiError = require("../api-error");
 const MongoDB = require("../utils/mongodb.util");
 const BookBorrowService = require("../services/book-borrow.service");
-const ReaderService = require("../services/reader.service");
 
 exports.create = async (req, res, next) => {
   if (!req.body?.MaDocGia || !req.body?.MaSach || !req.body?.NgayMuon) {
@@ -12,8 +11,10 @@ exports.create = async (req, res, next) => {
   try {
     const bookBorrowService = new BookBorrowService(MongoDB.client);
     const document = await bookBorrowService.create(req.body);
+
     return res.send(document);
   } catch (error) {
+    console.log(error);
     return next(
       new ApiError(500, "An error occurred while creating the book borrow")
     );
@@ -24,7 +25,11 @@ exports.findAll = async (req, res, next) => {
   let documents = [];
   try {
     const bookBorrowService = new BookBorrowService(MongoDB.client);
-    documents = await bookBorrowService.find({});
+    if (req.query?.readerId) {
+      documents = await bookBorrowService.find({
+        MaDocGia: req.query?.readerId,
+      });
+    } else documents = await bookBorrowService.find({});
   } catch (error) {
     return next(
       new ApiError(500, "An error occurred while retrieving book borrow")
@@ -34,13 +39,13 @@ exports.findAll = async (req, res, next) => {
 };
 
 exports.findByUser = async (req, res, next) => {
+  if (!req.params?.id)
+    return next(new ApiError(400, "MaDocGia can't be empty"));
   try {
-    // id đọc giả -> Mã đọc giả
-    const readerService = new ReaderService(MongoDB.client);
-    const { MaDocGia } = await readerService.findById(req.params.id);
-    // find book borrow by MaDocGia
     const bookBorrowService = new BookBorrowService(MongoDB.client);
-    const documents = await bookBorrowService.find({ MaDocGia: MaDocGia });
+    const documents = await bookBorrowService.find({
+      MaDocGia: req.params?.id,
+    });
     return res.send(documents);
   } catch (error) {
     return next(

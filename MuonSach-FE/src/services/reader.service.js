@@ -13,6 +13,9 @@ class ReaderService {
   async deleteAll() {
     return (await this.api.delete("/")).data;
   }
+  async checkUsername(data = {}) {
+    return (await this.api.get(`/check-username/`, { params: data })).data;
+  }
   async login(data) {
     return (await this.api.post("/login", data)).data;
   }

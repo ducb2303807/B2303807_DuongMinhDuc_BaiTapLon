@@ -38,10 +38,12 @@
           >
             <div class="d-flex justify-content-between align-items-center">
               <div class="me-3 overflow-hidden">
-                <h6 class="mb-1 fw-bold text-truncate">{{ book.TenSach }}</h6>
+                <h6 class="mb-1 fw-bold text-truncate">
+                  Sách: {{ book.TenSach }}
+                </h6>
                 <div class="small text-muted d-flex flex-column">
                   <span>Tác giả: {{ book.TacGia }}</span>
-                  <span>NXB: {{ book.nxb_info?.TenNXB }}</span>
+                  <span>Nhà xuất bản: {{ book.nxb_info?.TenNXB }}</span>
                 </div>
               </div>
               <span
@@ -68,9 +70,10 @@
         <div v-if="selectedBook" class="h-100 bg-white">
           <BookDetails
             :book="selectedBook"
-            @close="selectedBook = null"
+            @close="handleSelectBook({})"
             @save="handleUpdateBook"
             @delete="handleDeleteBook"
+            @sync-book="syncBookBorrow"
           />
         </div>
 
@@ -162,24 +165,20 @@ export default {
       this.searchQuery = val;
     },
     handleSelectBook(book) {
-      this.$emit("select-book", book);
-
       if (this.selectedBook && this.selectedBook._id === book._id) {
         this.selectedBook = null;
       } else {
         this.selectedBook = book;
       }
+      this.$emit("select-book", this.selectedBook);
     },
-
     async handleUpdateBook(updatedBookData) {
       try {
         const updatedBook = await BookService.update(
           updatedBookData._id,
           updatedBookData
         );
-        const index = this.books.findIndex(
-          (b) => b._id === updatedBookData._id
-        );
+        const index = this.books.findIndex((b) => b._id === updatedBook._id);
         if (index !== -1) {
           this.books.splice(index, 1, updatedBook);
           this.selectedBook = updatedBook;
@@ -201,6 +200,13 @@ export default {
         alert("Đã xóa sách!");
       } catch (err) {
         alert("Lỗi khi xóa: " + err.message);
+      }
+    },
+    syncBookBorrow(updatedBook) {
+      const index = this.books.findIndex((b) => b._id === updatedBook._id);
+      if (index !== -1) {
+        this.books.splice(index, 1, updatedBook);
+        this.selectedBook = updatedBook;
       }
     },
   },

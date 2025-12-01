@@ -1,6 +1,4 @@
 const { ObjectId } = require("mongodb");
-const PublisherService = require("./publisher.service");
-const ApiError = require("../api-error");
 
 class BookService {
   constructor(client) {
@@ -66,9 +64,10 @@ class BookService {
   }
 
   async findById(id) {
-    return await this.Book.findOne({
+    const result = await this.find({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     });
+    return result[0] || null;
   }
 
   async update(id, payload) {
@@ -101,6 +100,35 @@ class BookService {
   async deleteAll() {
     const result = await this.Book.deleteMany({});
     return result;
+  }
+
+  async reserveBook(maSach) {
+    try {
+      const book = await this.findById(maSach);
+
+      console.log(book);
+      if (book.SoQuyen > 0) {
+        book.SoQuyen -= 1;
+        await this.update(maSach, book);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async returnBook(maSach) {
+    try {
+      const book = await this.findById(maSach);
+      book.SoQuyen += 1;
+      await this.update(maSach, book);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }
 

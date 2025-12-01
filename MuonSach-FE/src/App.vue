@@ -4,13 +4,11 @@
 
 <template>
   <AppHeader></AppHeader>
-  <div class="mt-3">
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
-  </div>
+  <router-view class="mt-3" v-slot="{ Component }">
+    <transition name="fade" mode="out-in">
+      <component :is="Component" />
+    </transition>
+  </router-view>
   <AppFooter></AppFooter>
 </template>
 

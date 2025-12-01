@@ -10,6 +10,9 @@ class StaffService {
   async create(data) {
     return (await this.api.post("/", data)).data;
   }
+  async checkUsername(data = {}) {
+    return (await this.api.get(`/check-username/`, { params: data })).data;
+  }
   async login(data) {
     return (await this.api.post("/login", data)).data;
   }
