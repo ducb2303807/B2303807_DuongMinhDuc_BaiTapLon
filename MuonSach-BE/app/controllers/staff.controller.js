@@ -56,7 +56,7 @@ exports.login = async (req, res, next) => {
     return res.send({
       token: token,
       user: {
-        id: staff._id,
+        _id: staff._id,
         Ten: staff.HoTenNV,
         Username: staff.Username,
         role: "staff",

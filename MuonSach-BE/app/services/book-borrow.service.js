@@ -9,9 +9,15 @@ class BookBorrowService {
 
   extractBookBorrowData(payload) {
     const bookBorrow = {
-      MaDocGia: payload.MaDocGia,
-      MaSach: payload.MaSach,
-      MaNhanVien: payload.MaNhanVien,
+      MaDocGia: ObjectId.isValid(payload.MaDocGia)
+        ? new ObjectId(payload.MaDocGia)
+        : undefined,
+      MaSach: ObjectId.isValid(payload.MaSach)
+        ? new ObjectId(payload.MaSach)
+        : undefined,
+      MaNhanVien: ObjectId.isValid(payload.MaNhanVien)
+        ? new ObjectId(payload.MaNhanVien)
+        : undefined,
       NgayMuon: payload.NgayMuon,
       SoNgayMuon: payload.SoNgayMuon,
       TrangThai: payload.TrangThai,
@@ -36,7 +42,6 @@ class BookBorrowService {
 
     if (result) {
       const bookService = new BookService(MongoDB.client);
-      console.log(`Mã sách ${payload.MaSach}`);
       const book = await bookService.reserveBook(payload.MaSach);
     }
     return result;
@@ -99,18 +104,18 @@ class BookBorrowService {
 
       // 4. (Tùy chọn) Chọn lọc các trường cần hiển thị để kết quả gọn đẹp
       // Nếu bạn muốn lấy hết thì XÓA đoạn $project này đi
-      {
-        $project: {
-          _id: 1,
-          NgayMuon: 1,
-          NgayTra: 1,
-          TrangThai: 1,
-          // Chỉ lấy những thông tin cần thiết từ các object đã join
-          doc_gia: "$docgia_info.HoTen", // Ví dụ chỉ lấy tên
-          sach: "$sach_info.ten_sach",
-          nhan_vien: "$nhanvien_info.ho_ten_nv",
-        },
-      },
+      // {
+      //   $project: {
+      //     _id: 1,
+      //     NgayMuon: 1,
+      //     SoNgayMuon: 1,
+      //     TrangThai: 1,
+      //     // Chỉ lấy những thông tin cần thiết từ các object đã join
+      //     docgia_info: "$docgia_info.HoTen", // Ví dụ chỉ lấy tên
+      //     sach_info: "$sach_info.TenSach",
+      //     nhanvien_info: "$nhanvien_info.HoTenNV",
+      //   },
+      // },
     ]);
 
     return await cursor.toArray();
@@ -127,11 +132,8 @@ class BookBorrowService {
     const filter = {
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     };
-    if (padload.TrangThai === "Đã trả") {
-      const bookService = new BookService(MongoDB.client);
-      const book = await bookService.returnBook(payload.MaSach);
-    }
-    const update = this.extractTBookBorrowData(payload);
+
+    const update = this.extractBookBorrowData(payload);
     const updatedBookBorrow = await this.BookBorrow.findOneAndUpdate(
       filter,
       { $set: update },
@@ -142,14 +144,27 @@ class BookBorrowService {
       return null;
     }
 
+    if (payload.TrangThai === "Đã trả") {
+      const bookService = new BookService(MongoDB.client);
+      if (await bookService.returnBook(payload.MaSach))
+        console.log("Đã trả thành công sách", payload.MaSach);
+      else {
+        console.log("Không trả thành công sách", payload.MaSach);
+      }
+    }
+
     const result = await this.find({ _id: updatedBookBorrow._id });
-    return result;
+    return result[0] || null;
   }
 
   async delete(id) {
     const result = await this.BookBorrow.findOneAndDelete({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     });
+    if (result) {
+      const bookService = new BookService(MongoDB.client);
+      const book = await bookService.returnBook(result.MaSach);
+    }
     return result;
   }
 

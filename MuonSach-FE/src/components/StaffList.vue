@@ -12,6 +12,7 @@
         <SearchField
           :placeHolder="searchPlaceholder"
           @update:search-query="updateSearchQuery"
+          @refresh="getAllStaffs"
         ></SearchField>
       </div>
     </div>

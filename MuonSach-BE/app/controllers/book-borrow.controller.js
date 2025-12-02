@@ -1,6 +1,7 @@
 const ApiError = require("../api-error");
 const MongoDB = require("../utils/mongodb.util");
 const BookBorrowService = require("../services/book-borrow.service");
+const { ObjectId } = require("mongodb");
 
 exports.create = async (req, res, next) => {
   if (!req.body?.MaDocGia || !req.body?.MaSach || !req.body?.NgayMuon) {
@@ -25,9 +26,9 @@ exports.findAll = async (req, res, next) => {
   let documents = [];
   try {
     const bookBorrowService = new BookBorrowService(MongoDB.client);
-    if (req.query?.readerId) {
+    if (req.query?.MaDocGia && ObjectId.isValid(req.query.MaDocGia)) {
       documents = await bookBorrowService.find({
-        MaDocGia: req.query?.readerId,
+        MaDocGia: new ObjectId(req.query.MaDocGia),
       });
     } else documents = await bookBorrowService.find({});
   } catch (error) {
@@ -80,7 +81,7 @@ exports.update = async (req, res, next) => {
     if (!document) {
       return next(new ApiError(404, "Book borrow not found"));
     }
-    return res.send({ message: "Book borrow was updated successfully" });
+    return res.send(document);
   } catch (error) {
     return next(
       new ApiError(500, `Error updating book borrow with id=${req.params.id}`)

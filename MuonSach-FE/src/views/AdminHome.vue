@@ -87,8 +87,7 @@ export default {
       adminModules: [
         {
           title: "Quản lý Sách",
-          description:
-            "Thêm mới, cập nhật thông tin sách hoặc xóa các đầu sách cũ.",
+          description: "Thêm mới, cập nhật thông tin sách hoặc xóa sách cũ.",
           icon: "fas fa-book",
           colorName: "primary", // Xanh dương
           endPoint: "/admin/books",
@@ -103,16 +102,15 @@ export default {
         },
         {
           title: "Quản lý Mượn/Trả",
-          description:
-            "Duyệt yêu cầu mượn sách, xác nhận trả sách và xử lý vi phạm.",
+          description: "Duyệt yêu cầu mượn sách, xác nhận trả sách...",
           icon: "fas fa-clipboard-list",
-          colorName: "warning", // Vàng/Cam
+          colorName: "warning",
           endPoint: "/admin/book-borrows",
         },
         {
-          title: "Quản lý Người dùng",
+          title: "Quản lý Độc giả",
           description:
-            "Xem danh sách độc giả, khóa tài khoản vi phạm hoặc cấp lại mật khẩu.",
+            "Xem danh sách độc giả, chỉnh sửa thông tin hoặc cấp lại mật khẩu.",
           icon: "fas fa-users",
           colorName: "info",
           endPoint: "/admin/readers",

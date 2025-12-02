@@ -178,7 +178,6 @@ export default {
         const updatedBook = { ...this.book };
         updatedBook.SoQuyen = updatedBook.SoQuyen - 1;
 
-        console.log(updatedBook);
         this.$emit("sync-book", updatedBook);
         this.showBorrowModal = false;
       } catch (error) {

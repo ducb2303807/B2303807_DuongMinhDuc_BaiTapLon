@@ -1,4 +1,5 @@
 const { ObjectId } = require("mongodb");
+const { isValidObjectId } = require("mongoose");
 
 class BookService {
   constructor(client) {
@@ -11,7 +12,9 @@ class BookService {
       DonGia: payload.DonGia,
       SoQuyen: payload.SoQuyen,
       NamXuatBan: payload.NamXuatBan,
-      MaNXB: new ObjectId(payload.MaNXB),
+      MaNXB: ObjectId.isValid(payload.MaNXB)
+        ? new ObjectId(payload.MaNXB)
+        : undefined,
       TacGia: payload.TacGia,
     };
     // remove undefined fields
@@ -106,7 +109,6 @@ class BookService {
     try {
       const book = await this.findById(maSach);
 
-      console.log(book);
       if (book.SoQuyen > 0) {
         book.SoQuyen -= 1;
         await this.update(maSach, book);

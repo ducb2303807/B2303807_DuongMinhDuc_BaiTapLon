@@ -141,6 +141,16 @@ const routes = [
       title: "Thêm nhân viên",
     },
   },
+  {
+    path: "/admin/book-borrows",
+    name: "AdminBookBorrow",
+    component: () => import("@/views/AdminBookBorrow.vue"),
+    props: true,
+    meta: {
+      ...staffMetaTemplate,
+      title: "Quản lý mượn sách",
+    },
+  },
 
   {
     path: "/:pathMatch(.*)*",

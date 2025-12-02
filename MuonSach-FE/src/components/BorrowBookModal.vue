@@ -184,7 +184,6 @@ export default {
         MaDocGia: this.currentUser._id,
         NgayMuon: muonDate,
         SoNgayMuon: this.borrowDuration,
-        TrangThai: "Đang mượn",
       };
       this.$emit("confirm", payload);
     },
@@ -193,48 +192,5 @@ export default {
 </script>
 
 <style scoped>
-/* Giữ nguyên CSS cũ */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1050;
-  transition: all 0.3s ease;
-}
-
-.modal-content {
-  width: 95%;
-  max-width: 550px;
-  border: none;
-  transition: transform 0.3s ease-out;
-}
-
-.input-group-text {
-  background-color: transparent;
-}
-.form-control:focus {
-  box-shadow: none;
-  border-color: #dee2e6;
-}
-.input-group:focus-within {
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
-  border-radius: 0.375rem;
-}
-.input-group:focus-within .form-control,
-.input-group:focus-within .input-group-text {
-  border-color: #86b7fe;
-}
-
-.user-info {
-  transition: background-color 0.2s;
-}
-.user-info:hover {
-  background-color: #f8f9fa !important;
-}
+@import "@/assets/css/book-borrow-modal.css";
 </style>

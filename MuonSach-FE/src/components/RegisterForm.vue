@@ -102,7 +102,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="sdt" class="form-label fw-bold">Mật khẩu</label>
+        <label for="sdt" class="form-label fw-bold">Số điện thoại</label>
         <Field
           id="sdt"
           name="SoDienThoai"
@@ -128,7 +128,7 @@
 <script>
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { checkDuplicateReaderUsername } from "@/utils/auth.utils";
+import { isReaderUsernameAvailable } from "@/utils/auth.utils";
 
 export default {
   name: "LoginForm",
@@ -156,7 +156,7 @@ export default {
           "validate-username",
           "Tên đăng nhập đã tồn tại",
           async (value) => {
-            return await checkDuplicateReaderUsername(value);
+            return await isReaderUsernameAvailable(value);
           }
         )
         .required("Tên đăng nhập không được để trống"),
@@ -183,7 +183,7 @@ export default {
     };
   },
   methods: {
-    checkDuplicateReaderUsername,
+    isReaderUsernameAvailable,
     submitRegister(values) {
       this.$emit("submit:resister", values);
     },
