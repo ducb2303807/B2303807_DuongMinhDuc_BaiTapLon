@@ -81,19 +81,11 @@
               <td v-if="isAdmin">
                 <div class="d-flex align-items-center">
                   <div class="avatar avatar-blue me-2">
-                    {{
-                      getInitials(
-                        item.docgia_info?.HoTen || item.docgia_info?.Username
-                      )
-                    }}
+                    {{ getInitials(item.docgia_info?.Username) }}
                   </div>
                   <div class="d-flex flex-column">
                     <span class="fw-bold text-dark">
-                      {{
-                        item.docgia_info?.HoTen ||
-                        item.docgia_info?.Username ||
-                        "N/A"
-                      }}
+                      {{ item.docgia_info?.Username || "N/A" }}
                     </span>
                     <small class="text-muted" style="font-size: 0.75rem">
                       {{ item.MaDocGia }}
@@ -332,8 +324,6 @@ export default {
           return "badge-soft-success";
         case "Đã từ chối":
           return "badge-soft-danger";
-        case "Đã hủy":
-          return "badge-soft-secondary";
         default:
           return "badge-soft-secondary";
       }

@@ -30,8 +30,8 @@
         <h6 class="dropdown-header">Vai trò: {{ roleName }}</h6>
       </li>
 
-      <li v-if="currentUser.role === 'reader'">
-        <router-link class="dropdown-item" to="/lich-su-muon">
+      <!-- <li v-if="currentUser.role === 'reader'">
+        <router-link class="dropdown-item" to="/book-borrows">
           <i class="fas fa-history me-2"></i> Lịch sử mượn sách
         </router-link>
       </li>
@@ -42,15 +42,15 @@
       </li>
 
       <li v-if="currentUser.role === 'staff'">
-        <router-link class="dropdown-item" to="/admin/quan-ly-sach">
+        <router-link class="dropdown-item" to="/admin/books">
           <i class="fas fa-book-open me-2"></i> Quản lý sách
         </router-link>
       </li>
       <li v-if="currentUser.role === 'staff'">
-        <router-link class="dropdown-item" to="/admin/quan-ly-muon-tra">
+        <router-link class="dropdown-item" to="/admin/book-borrows">
           <i class="fas fa-list-alt me-2"></i> Quản lý mượn trả
         </router-link>
-      </li>
+      </li> -->
 
       <li><hr class="dropdown-divider" /></li>
 

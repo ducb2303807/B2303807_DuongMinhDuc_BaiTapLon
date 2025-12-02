@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-4">
+  <div class="page container py-4">
     <h2 class="mb-4 text-primary fw-bold">Quản Lý Mượn Trả Sách</h2>
 
     <BookBorrowList

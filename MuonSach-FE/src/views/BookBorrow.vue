@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-4">
+  <div class="page container py-4">
     <h2 class="mb-4 text-success fw-bold">Lịch Sử Mượn Sách</h2>
 
     <BookBorrowList :borrows="borrows" @cancel="handleCancel" />
@@ -29,10 +29,6 @@ export default {
         this.borrows = await BookBorrowService.getAll({
           MaDocGia: this.currentUser._id,
         });
-
-        // this.borrows.sort(
-        //   (a, b) => new Date(b.NgayMuon) - new Date(a.NgayMuon)
-        // );
       } catch (error) {
         console.error(error);
       }

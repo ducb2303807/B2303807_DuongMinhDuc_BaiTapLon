@@ -22,12 +22,13 @@ export default {
         NgaySinh: values.NgaySinh,
         Phai: values.GioiTinh,
         SoDienThoai: values.SoDienThoai,
+        DiaChi: values.DiaChi,
       };
 
       try {
         const data = await ReaderService.create(reader);
         if (!data) throw new Error();
-        window.alert("Đăng ký thành công!");
+        window.alert("Đăng ký thành công!, Bạn đã có thể đăng nhập ngay");
         this.$router.push({ name: "Login" });
       } catch (error) {
         window.alert("Đăng ký thất bại, vui lòng thử lại sau!");

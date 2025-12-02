@@ -208,7 +208,8 @@ export default {
         DiaChi: yup
           .string()
           .required("Địa chỉ là bắt buộc")
-          .max(100, "Tối đa 100 ký tự"),
+          .min(2, "Địa chỉ tối thiểu 2 ký tự")
+          .max(100, "Địa chỉ tối đa 100 ký tự"),
       });
 
       // Nếu là thêm mới: Password bắt buộc

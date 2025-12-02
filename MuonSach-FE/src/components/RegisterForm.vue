@@ -113,6 +113,18 @@
         <ErrorMessage name="SoDienThoai" class="text-danger" />
       </div>
 
+      <div class="mb-3">
+        <label for="diachi" class="form-label fw-bold">Địa chỉ</label>
+        <Field
+          id="diachi"
+          name="DiaChi"
+          type="text"
+          class="form-control"
+          placeholder="Nhập Địa chỉ"
+        />
+        <ErrorMessage name="DiaChi" class="text-danger" />
+      </div>
+
       <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
     </Form>
 
@@ -177,6 +189,11 @@ export default {
         .string()
         .matches(/^(0|\+84)(\d{9})$/, "Số điện thoại không hợp lệ")
         .required("Số điện thoại không được để trống"),
+      DiaChi: yup
+        .string()
+        .required("Địa chỉ không được để trống")
+        .min(3, "Địa chỉ tối thiểu 2 ký tự")
+        .max(100, "Địa chỉ tối đa 100 ký tự"),
     });
     return {
       RegisterFormSchema,
