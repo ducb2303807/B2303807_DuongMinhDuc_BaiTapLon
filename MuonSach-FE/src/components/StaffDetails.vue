@@ -69,20 +69,12 @@
           </div>
 
           <div class="d-flex justify-content-end gap-2 mt-3">
-            <button
-              type="button"
-              class="btn fw-bold px-4 btn-warning"
-              @click="isEditing = true"
+            <slot
+              name="actions"
+              :staff="staff"
+              :enableEdit="() => (isEditing = true)"
             >
-              <i class="fas fa-edit me-1"></i>Sửa
-            </button>
-            <button
-              type="button"
-              class="btn btn-danger fw-bold px-4"
-              @click="$emit('delete', staff._id)"
-            >
-              <i class="fas fa-trash me-1"></i>Xóa
-            </button>
+            </slot>
           </div>
         </div>
       </div>
@@ -109,7 +101,7 @@ export default {
   props: {
     staff: { type: Object, required: true },
   },
-  emits: ["close", "save", "delete"],
+  emits: ["close", "save"],
   data() {
     return {
       isEditing: false,

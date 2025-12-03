@@ -74,8 +74,11 @@
             @close="handleSelectBook({})"
             @save="handleUpdateBook"
             @delete="handleDeleteBook"
-            @sync-book="syncBookBorrow"
-          />
+          >
+            <template #actions="{ book, enableEdit }">
+              <slot name="actions" :book="book" :enableEdit="enableEdit"></slot>
+            </template>
+          </BookDetails>
         </div>
 
         <div
@@ -166,49 +169,19 @@ export default {
       this.searchQuery = val;
     },
     handleSelectBook(book) {
-      if (this.selectedBook && this.selectedBook._id === book._id) {
+      if (
+        !book._id ||
+        (this.selectedBook && this.selectedBook._id === book._id)
+      ) {
         this.selectedBook = null;
       } else {
         this.selectedBook = book;
       }
       this.$emit("select-book", this.selectedBook);
     },
-    async handleUpdateBook(updatedBookData) {
-      try {
-        const updatedBook = await BookService.update(
-          updatedBookData._id,
-          updatedBookData
-        );
-        const index = this.books.findIndex((b) => b._id === updatedBook._id);
-        if (index !== -1) {
-          this.books.splice(index, 1, updatedBook);
-          this.selectedBook = updatedBook;
-        }
-
-        alert("Cập nhật thành công!");
-      } catch (err) {
-        alert("Lỗi khi cập nhật: " + err.message);
-      }
-    },
-
-    async handleDeleteBook(bookId) {
-      if (!confirm("Bạn có chắc muốn xóa sách này?")) return;
-
-      try {
-        await BookService.delete(bookId);
-        this.books = this.books.filter((b) => b._id !== bookId);
-        this.selectedBook = null;
-        alert("Đã xóa sách!");
-      } catch (err) {
-        alert("Lỗi khi xóa: " + err.message);
-      }
-    },
-    syncBookBorrow(updatedBook) {
-      const index = this.books.findIndex((b) => b._id === updatedBook._id);
-      if (index !== -1) {
-        this.books.splice(index, 1, updatedBook);
-        this.selectedBook = updatedBook;
-      }
+    handleUpdateBook(updatedBookData) {
+      // Báo cáo: "Sếp Admin ơi, có người muốn sửa sách này!"
+      this.$emit("request-update", updatedBookData);
     },
   },
 };

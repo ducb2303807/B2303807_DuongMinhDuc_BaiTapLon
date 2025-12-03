@@ -71,21 +71,13 @@
             </div>
           </div>
 
-          <div v-if="isStaff()" class="d-flex justify-content-end gap-2 mt-3">
-            <button
-              type="button"
-              class="btn fw-bold px-4 btn-warning"
-              @click="isEditing = true"
+          <div class="d-flex justify-content-end gap-2 mt-3">
+            <slot
+              name="actions"
+              :reader="reader"
+              :enableEdit="() => (isEditing = true)"
             >
-              <i class="fas fa-edit me-1"></i>Sửa
-            </button>
-            <button
-              type="button"
-              class="btn btn-danger fw-bold px-4"
-              @click="$emit('delete', reader._id)"
-            >
-              <i class="fas fa-trash me-1"></i>Xóa
-            </button>
+            </slot>
           </div>
         </div>
       </div>
@@ -104,7 +96,6 @@
 
 <script>
 import { formatDate } from "@/utils/format-date.utils";
-import { isStaff } from "@/utils/auth.utils";
 import ReaderEditForm from "@/components/ReaderEditForm.vue";
 
 export default {
@@ -112,12 +103,11 @@ export default {
   props: {
     reader: { type: Object, required: true },
   },
-  emits: ["close", "save", "delete"],
+  emits: ["close", "save"],
   data() {
     return { isEditing: false };
   },
   methods: {
-    isStaff,
     formatDate,
     saveChanges(updatedReader) {
       this.$emit("save", updatedReader);

@@ -76,10 +76,18 @@
         <div v-if="selectedStaff" class="h-100 bg-white">
           <StaffDetails
             :staff="selectedStaff"
-            @close="selectedStaff = null"
+            @close="handleSelectStaff({})"
             @save="handleUpdateStaff"
-            @delete="handleDeleteStaff"
-          />
+          >
+            <template #actions="{ staff, enableEdit }">
+              <slot
+                name="actions"
+                :staff="staff"
+                :enableEdit="enableEdit"
+              ></slot>
+            </template>
+          </StaffDetails>
+          >
         </div>
 
         <div
@@ -105,6 +113,7 @@ export default {
     StaffDetails,
     SearchField,
   },
+  emits: ["select-staff", "request-update"],
   data() {
     return {
       staffs: [],
@@ -134,45 +143,39 @@ export default {
       this.loading = true;
       try {
         this.staffs = await StaffService.getAll();
+        const currentIdFromUrl = this.$route.params.id;
+        if (currentIdFromUrl) {
+          this.syncSelectedStaff(currentIdFromUrl);
+        }
       } catch (error) {
         console.error("Lỗi:", error);
       } finally {
         this.loading = false;
       }
     },
+    syncSelectedStaff(staffId) {
+      if (staffId && this.staffs.length > 0) {
+        this.selectedStaff = this.staffs.find((s) => s._id === staffId) || null;
+      } else {
+        this.selectedStaff = null;
+      }
+    },
     updateSearchQuery(val) {
       this.searchQuery = val;
     },
     handleSelectStaff(staff) {
-      if (this.selectedStaff && this.selectedStaff._id === staff._id) {
+      if (
+        !staff._id ||
+        (this.selectedStaff && this.selectedStaff._id === staff._id)
+      ) {
         this.selectedStaff = null;
       } else {
         this.selectedStaff = staff;
       }
+      this.$emit("select-staff", this.selectedStaff);
     },
-    async handleUpdateStaff(updatedData) {
-      try {
-        const result = await StaffService.update(updatedData._id, updatedData);
-        const index = this.staffs.findIndex((s) => s._id === updatedData._id);
-        if (index !== -1) {
-          this.staffs.splice(index, 1, result);
-          this.selectedStaff = result;
-        }
-        alert("Cập nhật thành công!");
-      } catch (err) {
-        alert("Lỗi khi cập nhật: " + err.message);
-      }
-    },
-    async handleDeleteStaff(id) {
-      if (!confirm("Bạn có chắc muốn xóa nhân viên này?")) return;
-      try {
-        await StaffService.delete(id);
-        this.staffs = this.staffs.filter((s) => s._id !== id);
-        this.selectedStaff = null;
-        alert("Đã xóa nhân viên!");
-      } catch (err) {
-        alert("Lỗi khi xóa: " + err.message);
-      }
+    handleUpdateStaff(updatedData) {
+      this.$emit("request-update", updatedData);
     },
   },
 };

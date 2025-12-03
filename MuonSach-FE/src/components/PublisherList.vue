@@ -66,10 +66,17 @@
         <div v-if="selectedPublisher" class="h-100 bg-white">
           <PublisherDetails
             :publisher="selectedPublisher"
-            @close="selectedPublisher = null"
+            @close="handleSelectPublisher({})"
             @save="handleUpdatePublisher"
-            @delete="handleDeletePublisher"
-          />
+          >
+            <template #actions="{ publisher, enableEdit }">
+              <slot
+                name="actions"
+                :publisher="publisher"
+                :enableEdit="enableEdit"
+              ></slot>
+            </template>
+          </PublisherDetails>
         </div>
 
         <div
@@ -95,7 +102,7 @@ export default {
     PublisherDetails,
     SearchField,
   },
-  emits: ["select-publisher"],
+  emits: ["select-publisher", "request-update"],
   data() {
     return {
       publishers: [],
@@ -138,10 +145,10 @@ export default {
     syncSelectedPublisher(publisherId) {
       if (publisherId && this.publishers.length > 0) {
         // Tìm sách trong list đã load
-        const foundpublisher = this.publishers.find(
+        const foundPublisher = this.publishers.find(
           (p) => p._id === publisherId
         );
-        this.selectedPublisher = foundpublisher || null;
+        this.selectedPublisher = foundPublisher || null;
       } else {
         this.selectedPublisher = null;
       }
@@ -150,43 +157,18 @@ export default {
       this.searchQuery = val;
     },
     handleSelectPublisher(pub) {
-      this.$emit("select-publisher", pub);
-
-      if (this.selectedPublisher && this.selectedPublisher._id === pub._id) {
+      if (
+        !pub._id ||
+        (this.selectedPublisher && this.selectedPublisher._id === pub._id)
+      ) {
         this.selectedPublisher = null;
       } else {
         this.selectedPublisher = pub;
       }
+      this.$emit("select-publisher", this.selectedPublisher);
     },
-    async handleUpdatePublisher(updatedPubData) {
-      try {
-        const updatedPub = await PublisherService.update(
-          updatedPubData._id,
-          updatedPubData
-        );
-
-        const index = this.publishers.findIndex(
-          (p) => p._id === updatedPubData._id
-        );
-        if (index !== -1) {
-          this.publishers.splice(index, 1, updatedPub);
-          this.selectedPublisher = updatedPub;
-        }
-        alert("Cập nhật thành công!");
-      } catch (err) {
-        alert("Lỗi khi cập nhật: " + err.message);
-      }
-    },
-    async handleDeletePublisher(pubId) {
-      if (!confirm("Bạn có chắc muốn xóa NXB này?")) return;
-      try {
-        await PublisherService.delete(pubId);
-        this.publishers = this.publishers.filter((p) => p._id !== pubId);
-        this.selectedPublisher = null;
-        alert("Đã xóa NXB!");
-      } catch (err) {
-        alert("Lỗi khi xóa: " + err.message);
-      }
+    handleUpdatePublisher(updatedPubData) {
+      this.$emit("request-update", updatedPubData);
     },
   },
 };

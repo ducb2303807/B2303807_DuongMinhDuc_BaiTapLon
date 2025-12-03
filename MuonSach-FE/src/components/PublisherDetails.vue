@@ -34,21 +34,13 @@
           </div>
         </div>
 
-        <div v-if="isStaff()" class="d-flex justify-content-end gap-2 mt-5">
-          <button
-            type="button"
-            class="btn fw-bold px-4 btn-warning"
-            @click="isEditing = true"
+        <div class="d-flex justify-content-end gap-2 mt-5">
+          <slot
+            name="actions"
+            :publisher="publisher"
+            :enableEdit="() => (isEditing = true)"
           >
-            <i class="fas fa-edit me-1"></i>Sửa
-          </button>
-          <button
-            type="button"
-            class="btn btn-danger fw-bold px-4"
-            @click="$emit('delete', publisher._id)"
-          >
-            <i class="fas fa-trash me-1"></i>Xóa
-          </button>
+          </slot>
         </div>
       </div>
 
@@ -67,7 +59,6 @@
 </template>
 
 <script>
-import { isStaff } from "@/utils/auth.utils";
 import PublisherEditForm from "@/components/PublisherEditForm.vue";
 
 export default {
@@ -77,14 +68,13 @@ export default {
   props: {
     publisher: { type: Object, required: true },
   },
-  emits: ["close", "save", "delete"],
+  emits: ["close", "save"],
   data() {
     return {
       isEditing: false,
     };
   },
   methods: {
-    isStaff,
     saveChanges(updatedPub) {
       this.$emit("save", updatedPub);
       this.isEditing = false;

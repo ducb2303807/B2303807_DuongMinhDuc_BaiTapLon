@@ -5,11 +5,43 @@
     <BookBorrowList
       :borrows="borrows"
       :isAdmin="true"
-      @approve="handleApprove"
-      @reject="handleReject"
-      @return="handleReturn"
       @refresh="fetchAllBorrows"
-    />
+    >
+      <template #actions="{ item }">
+        <div
+          class="d-flex flex-column gap-2 flex-md-row justify-content-end"
+          v-if="item.TrangThai === 'Chờ duyệt'"
+        >
+          <button
+            class="btn btn-icon btn-light-success"
+            @click="handleApprove(item)"
+            title="Duyệt"
+          >
+            <i class="fas fa-check"></i>
+          </button>
+          <button
+            class="btn btn-icon btn-light-danger"
+            @click="handleReject(item)"
+            title="Từ chối"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div v-else-if="item.TrangThai === 'Đang mượn'">
+          <button
+            class="btn btn-sm btn-primary px-3 rounded-pill shadow-sm"
+            @click="handleReturn(item)"
+          >
+            <i class="fas fa-undo me-1"></i> Trả sách
+          </button>
+        </div>
+
+        <span v-else class="text-muted opacity-50">
+          <i class="fas fa-lock"></i>
+        </span>
+      </template>
+    </BookBorrowList>
   </div>
 </template>
 
@@ -21,7 +53,6 @@ export default {
   components: { BookBorrowList },
   data() {
     const currentUser = getUserData();
-    console.log(currentUser);
     return {
       borrows: [],
       currentUser,
@@ -76,3 +107,7 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@import "@/assets/css/book-borrow-list.css";
+</style>

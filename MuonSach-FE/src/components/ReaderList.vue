@@ -90,10 +90,16 @@
         <div v-if="selectedReader" class="h-100 bg-white">
           <ReaderDetails
             :reader="selectedReader"
-            @close="selectedReader = null"
+            @close="handleSelectReader({})"
             @save="handleUpdateReader"
-            @delete="handleDeleteReader"
-          />
+          >
+            <template #actions="{ reader, enableEdit }">
+              <slot
+                name="actions"
+                :reader="reader"
+                :enableEdit="enableEdit"
+              ></slot> </template
+          ></ReaderDetails>
         </div>
         <div
           v-else
@@ -115,7 +121,7 @@ import SearchField from "@/components/SearchField.vue";
 export default {
   name: "ReaderList",
   components: { ReaderDetails, SearchField },
-  emits: ["select-reader"],
+  emits: ["select-reader", "request-update"],
   data() {
     return {
       readers: [],
@@ -179,46 +185,18 @@ export default {
       this.searchQuery = val;
     },
     handleSelectReader(reader) {
-      this.$emit("select-reader", reader);
-
-      if (this.selectedReader && this.selectedReader._id === reader._id) {
+      if (
+        !reader._id ||
+        (this.selectedReader && this.selectedReader._id === reader._id)
+      ) {
         this.selectedReader = null;
       } else {
         this.selectedReader = reader;
       }
+      this.$emit("select-reader", this.selectedReader);
     },
-    async handleUpdateReader(updatedData) {
-      try {
-        const updatedReader = await ReaderService.update(
-          updatedData._id,
-          updatedData
-        );
-        const index = this.readers.findIndex((r) => r._id === updatedData._id);
-        if (index !== -1) {
-          this.readers.splice(index, 1, updatedReader);
-          this.selectedReader = updatedReader;
-        }
-        alert("Cập nhật thành công!");
-      } catch (err) {
-        alert("Lỗi cập nhật: " + err.message);
-      }
-    },
-    async handleDeleteReader(readerId) {
-      if (
-        !confirm(
-          "Bạn có chắc muốn xóa độc giả này? Hành động này không thể hoàn tác."
-        )
-      )
-        return;
-      try {
-        await ReaderService.delete(readerId);
-        this.readers = this.readers.filter((r) => r._id !== readerId);
-        this.selectedReader = null;
-        alert("Đã xóa độc giả!");
-      } catch (err) {
-        console.log(err);
-        alert("Lỗi xóa: " + err.message);
-      }
+    handleUpdateReader(updatedData) {
+      this.$emit("request-update", updatedData);
     },
   },
 };

@@ -157,51 +157,7 @@
               </td>
 
               <td class="text-end pe-4">
-                <div v-if="isAdmin">
-                  <div
-                    class="d-flex flex-column gap-2 flex-md-row justify-content-end"
-                    v-if="item.TrangThai === 'Chờ duyệt'"
-                  >
-                    <button
-                      class="btn btn-icon btn-light-success"
-                      @click="$emit('approve', item)"
-                      title="Duyệt"
-                    >
-                      <i class="fas fa-check"></i>
-                    </button>
-                    <button
-                      class="btn btn-icon btn-light-danger"
-                      @click="$emit('reject', item)"
-                      title="Từ chối"
-                    >
-                      <i class="fas fa-times"></i>
-                    </button>
-                  </div>
-                  <div v-else-if="item.TrangThai === 'Đang mượn'">
-                    <button
-                      class="btn btn-sm btn-primary px-3 rounded-pill shadow-sm"
-                      @click="$emit('return', item)"
-                    >
-                      <i class="fas fa-undo me-1"></i> Trả sách
-                    </button>
-                  </div>
-                  <span v-else class="text-muted opacity-50"
-                    ><i class="fas fa-lock"></i
-                  ></span>
-                </div>
-
-                <div v-else>
-                  <button
-                    v-if="item.TrangThai === 'Chờ duyệt'"
-                    class="btn btn-sm btn-outline-danger rounded-pill px-3"
-                    @click="$emit('cancel', item)"
-                  >
-                    Hủy yêu cầu
-                  </button>
-                  <span v-else class="text-success small fw-bold">
-                    <i class="fas fa-check-circle me-1"></i>Hoàn tất
-                  </span>
-                </div>
+                <slot name="actions" :item="item"></slot>
               </td>
             </tr>
 
@@ -242,7 +198,7 @@ export default {
     isAdmin: { type: Boolean, default: false },
   },
   // Thêm emit 'refresh' để báo cho cha tải lại data
-  emits: ["approve", "reject", "return", "cancel", "refresh"],
+  emits: ["refresh"],
   data() {
     return {
       currentTab: "all",
@@ -284,7 +240,6 @@ export default {
           return tenSach.includes(query) || usernameDocGia.includes(query);
         });
       }
-
       return result;
     },
   },

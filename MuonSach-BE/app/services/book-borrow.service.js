@@ -144,12 +144,12 @@ class BookBorrowService {
       return null;
     }
 
-    if (payload.TrangThai === "Đã trả") {
+    if (payload.TrangThai === "Đã trả" || payload.TrangThai === "Đã từ chối") {
       const bookService = new BookService(MongoDB.client);
-      if (await bookService.returnBook(payload.MaSach))
-        console.log("Đã trả thành công sách", payload.MaSach);
+      if (await bookService.returnBook(updatedBookBorrow.MaSach))
+        console.log("Đã trả thành công sách", updatedBookBorrow.MaSach);
       else {
-        console.log("Không trả thành công sách", payload.MaSach);
+        console.log("Không trả thành công sách", updatedBookBorrow.MaSach);
       }
     }
 

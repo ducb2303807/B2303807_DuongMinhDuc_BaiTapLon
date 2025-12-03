@@ -40,7 +40,6 @@ const routes = [
     component: () => import("@/views/Publisher.vue"),
     meta: { title: "Tìm nhà xuất bản" },
   },
-  // reader
   {
     path: "/book-borrows",
     name: "BookBorrow",

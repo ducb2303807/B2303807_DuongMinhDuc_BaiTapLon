@@ -83,35 +83,15 @@
               </div>
             </div>
           </div>
-          <!-- // button // -->
-          <div v-if="isStaff()" class="d-flex justify-content-end gap-2">
-            <div class="d-flex justify-content-end gap-2">
-              <button
-                type="button"
-                class="btn fw-bold px-4 btn-warning"
-                @click="isEditing = true"
-              >
-                <i class="fas fa-edit me-1"></i>Sửa
-              </button>
-              <button
-                type="button"
-                class="btn btn-danger fw-bold px-4"
-                @click="$emit('delete', book._id)"
-              >
-                <i class="fas fa-trash me-1"></i>Xóa
-              </button>
-            </div>
-          </div>
 
-          <div v-else class="d-flex justify-content-end">
-            <button
-              type="button"
-              class="btn btn-primary fw-bold px-4"
-              :disabled="book.SoQuyen === 0"
-              @click="showBorrowModal = true"
+          <!-- // button // -->
+          <div class="d-flex justify-content-end gap-2 mt-3">
+            <slot
+              name="actions"
+              :book="book"
+              :enableEdit="() => (isEditing = true)"
             >
-              <i class="fa-solid fa-book-bookmark me-1"></i>Mượn sách
-            </button>
+            </slot>
           </div>
         </div>
       </div>
@@ -126,32 +106,21 @@
         ></BookEditForm>
       </div>
     </div>
-
-    <BorrowBookModal
-      v-if="showBorrowModal"
-      :book="book"
-      @close="showBorrowModal = false"
-      @confirm="handleConfirmBorrow"
-    />
   </div>
 </template>
 
 <script>
-import { isStaff } from "@/utils/auth.utils";
 import { formatCurrency } from "@/utils/format-currency.utils";
 import BookEditForm from "@/components/BookEditForm.vue";
-import BorrowBookModal from "@/components/BorrowBookModal.vue";
-import BookBorrowService from "@/services/book-borrow.service";
 
 export default {
   components: {
     BookEditForm,
-    BorrowBookModal,
   },
   props: {
     book: { Object, required: true },
   },
-  emits: ["close", "save", "delete", "sync-book"],
+  emits: ["close", "save"],
   data() {
     return {
       isEditing: false,
@@ -160,33 +129,12 @@ export default {
   },
   methods: {
     formatCurrency,
-    isStaff,
     saveChanges(book) {
       this.$emit("save", book);
       this.isEditing = false;
     },
     cancelEdit() {
       this.isEditing = false;
-    },
-    async handleConfirmBorrow(payload) {
-      try {
-        await BookBorrowService.create(payload);
-        alert(
-          "Đăng ký mượn sách thành công! Bạn có thể đến thư viện mượn sách"
-        );
-
-        const updatedBook = { ...this.book };
-        updatedBook.SoQuyen = updatedBook.SoQuyen - 1;
-
-        this.$emit("sync-book", updatedBook);
-        this.showBorrowModal = false;
-      } catch (error) {
-        console.error(error);
-        alert(
-          "Lỗi khi mượn sách: " +
-            (error.response?.data?.message || error.message)
-        );
-      }
     },
   },
 };
