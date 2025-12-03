@@ -1,7 +1,7 @@
 <template>
   <div class="container pt-2">
     <h2 class="text-center text-uppercase text-primary fw-bold mb-4">
-      Thêm độc giả mới
+      Thêm nhân viên mới
     </h2>
     <div class="bg-white p-4 rounded shadow-sm mt-3">
       <StaffEditForm

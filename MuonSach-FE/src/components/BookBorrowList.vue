@@ -159,11 +159,11 @@
               <td class="text-end pe-4">
                 <div v-if="isAdmin">
                   <div
-                    class="d-flex flex-column gap-sm-1 gap-md-0 flex-md-row"
+                    class="d-flex flex-column gap-2 flex-md-row justify-content-end"
                     v-if="item.TrangThai === 'Chờ duyệt'"
                   >
                     <button
-                      class="btn btn-icon btn-light-success me-2"
+                      class="btn btn-icon btn-light-success"
                       @click="$emit('approve', item)"
                       title="Duyệt"
                     >

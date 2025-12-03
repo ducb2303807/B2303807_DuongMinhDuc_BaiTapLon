@@ -62,7 +62,7 @@
             class="form-select"
             placeholder="VD: Nhân viên kho, Quản lý..."
           >
-            <option value="" disabled>-- Chọn Nhà Xuất Bản --</option>
+            <option value="" disabled>-- Chọn chức vụ --</option>
             <option v-for="role in roles" :key="role" :value="role">
               {{ role }}
             </option>

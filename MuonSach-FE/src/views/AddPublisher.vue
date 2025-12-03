@@ -1,7 +1,7 @@
 <template>
   <div class="container pt-2">
     <h2 class="text-center text-uppercase text-primary fw-bold mb-4">
-      Thêm độc giả mới
+      Thêm nhà xuất bản mới
     </h2>
     <PublisherEditForm
       @save-changes="saveChanges"
