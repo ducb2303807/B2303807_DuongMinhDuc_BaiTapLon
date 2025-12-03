@@ -54,17 +54,20 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link fw-bold" to="/books">
+              <router-link class="nav-link fw-bold" :to="{ name: 'Book' }">
                 Tìm sách
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link fw-bold" to="/publishers">
+              <router-link class="nav-link fw-bold" :to="{ name: 'Publisher' }">
                 Tìm nhà xuất bản
               </router-link>
             </li>
             <li class="nav-item fw-bold">
-              <router-link class="nav-link fw-bold" to="/book-borrows">
+              <router-link
+                class="nav-link fw-bold"
+                :to="{ name: 'BookBorrow' }"
+              >
                 Mượn sách
               </router-link>
             </li>
@@ -106,7 +109,9 @@
                   >
                 </li>
                 <li>
-                  <router-link class="dropdown-item" to="/admin/publishers"
+                  <router-link
+                    class="dropdown-item"
+                    :to="{ name: 'AdminPublisher' }"
                     >Nhà xuất bản</router-link
                   >
                 </li>
@@ -129,13 +134,17 @@
                 aria-labelledby="navbarDropdownUser"
               >
                 <li>
-                  <router-link class="dropdown-item" to="/admin/readers"
+                  <router-link
+                    class="dropdown-item"
+                    :to="{ name: 'AdminReader' }"
                     >Độc giả</router-link
                   >
                 </li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
-                  <router-link class="dropdown-item" to="/admin/staffs"
+                  <router-link
+                    class="dropdown-item"
+                    :to="{ name: 'AdminStaff' }"
                     >Nhân viên hệ thống</router-link
                   >
                 </li>
@@ -183,6 +192,7 @@
 <script>
 import { logout as appLogout } from "@/utils/auth.utils";
 import UserMenu from "@/components/UserMenu.vue";
+
 export default {
   name: "AppHeader",
   components: {
