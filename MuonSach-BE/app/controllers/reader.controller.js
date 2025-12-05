@@ -43,7 +43,6 @@ exports.findUsername = async (req, res, next) => {
     }
     const document = await readerService.findUsername(Username);
 
-    console.log(document);
     return res.send({ exists: !!document });
   } catch (error) {
     console.log(error);

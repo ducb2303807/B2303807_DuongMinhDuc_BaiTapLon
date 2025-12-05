@@ -54,7 +54,7 @@ class BookBorrowService {
         $match: filter,
       },
 
-      // --- JOIN 1: Lấy thông tin Độc Giả ---
+      // --- Lấy thông tin Độc Giả ---
       {
         $lookup: {
           from: "DocGia", // Tên collection Độc giả trong DB
@@ -70,7 +70,7 @@ class BookBorrowService {
         },
       },
 
-      // --- JOIN 2: Lấy thông tin Sách ---
+      // --- Lấy thông tin Sách ---
       {
         $lookup: {
           from: "Sach", // Tên collection Sách trong DB
@@ -86,7 +86,7 @@ class BookBorrowService {
         },
       },
 
-      // --- JOIN 3: Lấy thông tin Nhân Viên ---
+      // --- Lấy thông tin Nhân Viên ---
       {
         $lookup: {
           from: "NhanVien", // Tên collection Nhân viên trong DB
@@ -102,7 +102,7 @@ class BookBorrowService {
         },
       },
 
-      // 4. (Tùy chọn) Chọn lọc các trường cần hiển thị để kết quả gọn đẹp
+      // Chọn lọc các trường cần hiển thị để kết quả gọn đẹp
       // Nếu bạn muốn lấy hết thì XÓA đoạn $project này đi
       // {
       //   $project: {

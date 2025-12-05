@@ -3,13 +3,15 @@
 </style>
 
 <template>
-  <AppHeader></AppHeader>
-  <router-view class="mt-3" v-slot="{ Component }">
-    <transition name="fade" mode="out-in">
-      <component :is="Component" />
-    </transition>
-  </router-view>
-  <AppFooter></AppFooter>
+  <div style="background-color: #f5f7fa">
+    <AppHeader></AppHeader>
+    <router-view class="mt-3" v-slot="{ Component }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
+    <AppFooter></AppFooter>
+  </div>
 </template>
 
 <script>

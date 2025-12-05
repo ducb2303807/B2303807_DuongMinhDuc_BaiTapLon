@@ -8,17 +8,9 @@
   >
     <div class="container-fluid">
       <router-link
-        v-if="!isStaff()"
         class="navbar-brand d-flex justify-content-center logo ms-2"
         exact
-        to="/"
-      >
-        <img class="img-fluid" src="../assets/image/CTU_logo.png" alt="logo" />
-      </router-link>
-      <router-link
-        v-else
-        class="navbar-brand d-flex justify-content-center logo ms-2"
-        to="/admin"
+        :to="isAdminRoute ? '/admin' : '/'"
       >
         <img class="img-fluid" src="../assets/image/CTU_logo.png" alt="logo" />
       </router-link>
@@ -40,7 +32,7 @@
         id="navbarSupportedContent"
       >
         <!-- // header cho độc giả // -->
-        <div v-if="!isStaff()">
+        <div v-if="!isAdminRoute">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
             <li class="nav-item">
               <router-link
@@ -165,13 +157,16 @@
             v-if="!currentUser"
           >
             <li class="nav-item">
-              <router-link class="w-100" to="/login">
+              <router-link
+                class="w-100"
+                :to="isAdminRoute ? '/admin/login' : '/login'"
+              >
                 <button class="btn btn-outline-primary w-100" type="button">
                   Đăng nhập
                 </button>
               </router-link>
             </li>
-            <li class="nav-item">
+            <li v-if="!isAdminRoute" class="nav-item">
               <router-link class="w-100" to="/register">
                 <button class="btn btn-primary w-100" type="button">
                   Đăng ký
@@ -203,7 +198,11 @@ export default {
       currentUser: null,
     };
   },
-  computed: {},
+  computed: {
+    isAdminRoute() {
+      return this.$route.path.startsWith("/admin");
+    },
+  },
   watch: {
     // theo dõi route thay đổi
     $route() {
@@ -235,10 +234,6 @@ export default {
       const navButton = document.getElementById("nav-button");
       const isExpanded = navButton.getAttribute("aria-expanded") === "true";
       if (isExpanded) navButton.click();
-    },
-    isStaff() {
-      if (!this.currentUser) return false;
-      return this.currentUser.role === "staff";
     },
   },
 };

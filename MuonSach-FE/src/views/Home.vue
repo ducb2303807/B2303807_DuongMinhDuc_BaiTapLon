@@ -89,8 +89,7 @@ const features = ref([
   },
   {
     title: "Tìm nhà xuất bản",
-    description:
-      "Lọc và xem danh sách các tài liệu được phát hành bởi các nhà xuất bản uy tín.",
+    description: "Lọc và xem danh sách nhà xuất bản uy tín.",
     icon: "fas fa-building",
     colorName: "success", // Sử dụng màu xanh lá của Bootstrap
     endPoint: "/publishers",

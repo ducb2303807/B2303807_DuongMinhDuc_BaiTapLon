@@ -27,6 +27,8 @@
 import BookList from "@/components/BookList.vue";
 import BorrowBookModal from "@/components/BorrowBookModal.vue";
 import BookBorrowService from "@/services/book-borrow.service";
+import { isTokenValid } from "@/utils/auth.utils";
+
 export default {
   components: {
     BookList,
@@ -40,6 +42,11 @@ export default {
   },
   methods: {
     openBorrowModal(book) {
+      if (!isTokenValid()) {
+        alert("Bạn cần đăng nhập để sử dụng chức năng này!");
+        this.$router.push({ name: "Login" });
+        return;
+      }
       this.selectedBorrowBook = book;
       this.showBorrowModal = true;
     },

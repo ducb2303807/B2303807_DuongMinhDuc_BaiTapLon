@@ -1,65 +1,46 @@
 <template>
-  <div class="container">
-    <LoginForm
-      :role="role"
-      @login:switch-to-staff="switchToStaff"
-      @login:switch-to-user="switchToUser"
-      @submit:login="login"
-    />
+  <div class="container mt-5">
+    <LoginForm role="Độc giả" @submit:login="handleReaderLogin">
+      <template #footer>
+        <div class="p-0 text-muted">
+          Bạn chưa có tài khoản?
+          <router-link to="/register">Đăng ký ngay!</router-link>
+        </div>
+        <div class="mt-2 text-muted">
+          Bạn là nhân viên?
+          <router-link to="/admin/login" class="fw-bold text-decoration-none">
+            <i class="fas fa-user-tie"></i> Đăng nhập nhân viên
+          </router-link>
+        </div>
+      </template>
+    </LoginForm>
   </div>
 </template>
 
 <script>
 import LoginForm from "@/components/LoginForm.vue";
 import ReaderService from "@/services/reader.service";
-import StaffService from "@/services/staff.service";
+
 export default {
-  components: {
-    LoginForm,
-  },
+  components: { LoginForm },
   methods: {
-    switchToUser() {
-      this.role = "Người dùng";
-    },
-    switchToStaff() {
-      this.role = "Nhân viên";
-    },
-
-    async login(data) {
+    async handleReaderLogin(data) {
       try {
-        const result =
-          this.role === "Người dùng"
-            ? await this.readerLogin(data)
-            : await this.staffLogin(data);
-
+        const result = await ReaderService.login(data);
         if (!result.token) {
-          alert("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+          alert("Đăng nhập thất bại. Kiểm tra lại thông tin.");
           return;
         }
-
         localStorage.setItem("token", result.token);
         localStorage.setItem("user", JSON.stringify(result.user));
 
+        // Đăng nhập xong độc giả về trang chủ
         this.$router.push({ name: "Home" });
       } catch (error) {
-        console.error("Login failed:", error);
-        alert("Đăng nhập thất bại. Vui lòng thử lại.");
+        console.error(error);
+        alert("Lỗi đăng nhập.");
       }
     },
-
-    async readerLogin(data) {
-      return await ReaderService.login(data);
-    },
-    async staffLogin(data) {
-      return await StaffService.login(data);
-    },
-  },
-  data() {
-    return {
-      Username: "",
-      Password: "",
-      role: "Người dùng",
-    };
   },
 };
 </script>

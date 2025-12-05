@@ -46,7 +46,7 @@ const routes = [
     component: () => import("@/views/BookBorrow.vue"),
     meta: { title: "Mượn sách", ...readerMetaTemplate },
   },
-  // staff
+
   // 1. Trang Dashboard (/admin)
   {
     path: "/admin",
@@ -54,11 +54,17 @@ const routes = [
     // Lưu ý: Trỏ thẳng vào View nội dung, không qua Layout trung gian ở router nữa
     component: () => import("@/views/AdminHome.vue"),
     meta: {
-      ...staffMetaTemplate,
+      // ...staffMetaTemplate,
       title: "Trang quản lý",
     },
   },
-
+  // staff
+  {
+    path: "/admin/login",
+    name: "AdminLogin",
+    component: () => import("@/views/AdminLogin.vue"),
+    meta: { title: "Đăng Nhập" },
+  },
   // 2. Thêm sách (/admin/books/add)
   {
     path: "/admin/books/add",
@@ -182,7 +188,9 @@ router.beforeEach((to, from, next) => {
   //Kiểm tra đăng nhập
   if (to.meta.requiresAuth && !isTokenValid()) {
     alert("Vui lòng đăng nhập để truy cập hoặc thực hiện chức năng này!");
-    return next({ name: "Login" });
+    const isAdminRoute = from.path.startsWith("/admin");
+    const endPoint = isAdminRoute ? "AdminLogin" : "Login";
+    return next({ name: endPoint });
   }
 
   // không auth nữa

@@ -37,23 +37,8 @@
       <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
     </Form>
 
-    <div class="text-center" v-if="role === 'Người dùng'">
-      <div class="mt-3 p-0 text-muted">
-        Bạn chưa có tài khoản?
-        <router-link to="/register">Đăng ký ngay! </router-link>
-      </div>
-      <div class="mt-2 text-muted">
-        Bạn là nhân viên?
-        <button class="btn btn-link p-0 ms-2 small" @click="switchToStaff">
-          <i class="fas fa-user-tie"></i>Đăng nhập bằng tư cách nhân viên
-        </button>
-      </div>
-    </div>
-    <div class="mt-3 text-center" v-else>
-      Bạn là người dùng?
-      <button class="btn btn-link p-0 ms-2" @click="switchToUser">
-        <i class="fas fa-user-tie"></i>Đăng nhập với tư cách người dùng
-      </button>
+    <div class="text-center mt-3">
+      <slot name="footer"></slot>
     </div>
   </div>
 </template>
@@ -75,7 +60,7 @@ export default {
       default: "Người dùng",
     },
   },
-  emits: ["submit:login", "login:switchToStaff", "login:switchToUser"],
+  emits: ["submit:login"],
   data() {
     const LoginFormSchema = yup.object({
       Username: yup
